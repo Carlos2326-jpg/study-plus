@@ -1,0 +1,1 @@
+Documenta a organização da persistência

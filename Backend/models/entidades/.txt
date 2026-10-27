@@ -1,0 +1,1 @@
+Representa as entidades do sistema

@@ -1,0 +1,1 @@
+Gerencia a comunicação com a API
