@@ -22,6 +22,16 @@ export const authService = {
     }
   },
 
+    // Atualiza os dados do perfil do usuário logado
+  atualizarPerfil: async (dados) => {
+    try {
+      const response = await api.put('/auth/me', dados);
+      return response.data; // { message, usuario }
+    } catch (error) {
+      throw error.response?.data?.message || 'Erro ao atualizar o perfil.';
+    }
+  },
+
   // Adicione este método dentro do objeto "authService" no seu src/services/authService.js
 
   // Realiza a chamada de cadastro de um novo usuário
@@ -44,6 +54,15 @@ export const authService = {
       return response.data; // Espera-se uma mensagem de sucesso como { message: 'E-mail enviado' }
     } catch (error) {
       throw error.response?.data?.message || 'Erro ao processar solicitação de recuperação.';
+    }
+  },
+
+    validateCode: async (email, codigo) => {
+    try {
+      const response = await api.post('/auth/validate-code', { email, codigo });
+      return response.data; // { tokenTemporario }
+    } catch (error) {
+      throw error.response?.data?.message || 'Código inválido ou expirado.';
     }
   },
 

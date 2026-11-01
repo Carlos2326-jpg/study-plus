@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Controllers/authController';
 import Button from '../../Components/ui/Button';
 import Input from '../../Components/ui/Input';
-import Header from '../../Components/layout/header';
+import Header from './Components/layout/Header';
 import './Styles/ResetarSenhaPage.css';
 
 export const ResetarSenhaPage = () => {
@@ -16,7 +16,7 @@ export const ResetarSenhaPage = () => {
   const [sucesso, setSucesso] = useState(false);
 
   // Extrai automaticamente o parâmetro '?token=...' vindo do e-mail
-  const token = searchParams.get('token');
+    const token = searchParams.get('token') || localStorage.getItem('@App:reset_token');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +28,8 @@ export const ResetarSenhaPage = () => {
 
     const foiRedefinida = await handleResetPassword(token, novaSenha, confirmarSenha);
     if (foiRedefinida) {
+      localStorage.removeItem('@App:reset_token');
+      localStorage.removeItem('@App:reset_email');
       setSucesso(true);
       setTimeout(() => {
         navigate('/login'); // Redireciona de volta após 3 segundos
@@ -37,7 +39,7 @@ export const ResetarSenhaPage = () => {
 
   return (
     <div className="login-container">
-      <Header titulo="Oi" />
+      <Header titulo="Redefinir Senha" />
       <div className="card-login" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
 
         {sucesso ? (
@@ -73,7 +75,7 @@ export const ResetarSenhaPage = () => {
             </article>
 
             <Button type="submit" disabled={loading || !token}>
-              {loading ? 'Salvando...' : 'Salvar Nova Senha'}
+            {loading ? 'Salvando...' : 'Salvar Senha'}
             </Button>
           </form>
         )}

@@ -11,6 +11,8 @@ const links = [
   { path: "/metas", label: "🎯 Metas" },
   { path: "/progresso", label: "📊 Progresso" },
   { path: "/planejamento", label: "📅 Planejamento" },
+  { path: "/disciplinas", label: "📚 Disciplinas" },
+  { path: "/perfil", label: "👤 Perfil" },
 ];
 
 export default function Navbar() {

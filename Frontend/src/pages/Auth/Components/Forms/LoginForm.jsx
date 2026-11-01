@@ -48,6 +48,9 @@ export const LoginForm = ({ onEsqueceuSenha }) => {
       </button>
 
       <div className="form-actions">
+        <span onClick={() => navigate("/forgot-password")}>
+          Esqueceu a senha?
+        </span>
         <span onClick={() => navigate("/register")}>
           Deseja criar uma conta?
         </span>

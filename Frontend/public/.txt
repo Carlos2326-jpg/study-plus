@@ -1,1 +1,0 @@
-Armazena arquivos públicos e recursos estáticos

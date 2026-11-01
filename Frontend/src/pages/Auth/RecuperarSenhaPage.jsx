@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../Components/layout/header';
+import Header from './Components/layout/Header';
 
 // Importação dos 3 sub-formulários do funil
 import { RecuperarSenhaForm } from './Components/Forms/RecuperarSenhaForm';

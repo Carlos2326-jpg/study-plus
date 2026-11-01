@@ -14,8 +14,11 @@ const TarefaModel = {
     return rows;
   },
 
-  buscarPorId: async (id) => {
-    const [rows] = await pool.query("SELECT * FROM Tarefa WHERE id = ?", [id]);
+    buscarPorId: async (id, usuario_id) => {
+    const [rows] = await pool.query(
+      "SELECT * FROM Tarefa WHERE id = ? AND usuario_id = ?",
+      [id, usuario_id]
+    );
     return rows[0] || null;
   },
 

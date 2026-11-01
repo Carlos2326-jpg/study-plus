@@ -1,1 +1,0 @@
-Agrupa recursos de autenticação e segurança

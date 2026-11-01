@@ -178,15 +178,15 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
       // Retorna o token temporário que o back-end gerou para permitir a troca de senha
       return { sucesso: true, tokenTemporario: data.tokenTemporario };
-    } catch (err) {
-      setErro(err);
+      } catch (err) {
+      setErro(typeof err === 'string' ? err : 'Não foi possível validar o código.');
       setLoading(false);
       return { sucesso: false };
     }
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, loading, erro, handleLogin, handleLogout, handleRegister, handleForgotPassword, handleResetPassword, handleValidarCodigo }}>
+    <AuthContext.Provider value={{ usuario, setUsuario, loading, erro, handleLogin, handleLogout, handleRegister, handleForgotPassword, handleResetPassword, handleValidarCodigo }}>
       {children}
     </AuthContext.Provider>
   );

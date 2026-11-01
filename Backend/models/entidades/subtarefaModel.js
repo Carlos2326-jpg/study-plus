@@ -6,6 +6,16 @@ const SubtarefaModel = {
     return rows;
   },
 
+    buscarPorId: async (id, usuario_id) => {
+    const [rows] = await pool.query(
+      `SELECT s.* FROM Subtarefa s
+         JOIN Tarefa t ON t.id = s.tarefa_id
+        WHERE s.id = ? AND t.usuario_id = ?`,
+      [id, usuario_id]
+    );
+    return rows[0] || null;
+  },
+
   criar: async (tarefa_id, titulo) => {
     const [result] = await pool.query(
       "INSERT INTO Subtarefa (tarefa_id, titulo, concluida) VALUES (?, ?, false)",

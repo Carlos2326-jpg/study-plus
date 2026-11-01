@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
-const { autenticar } = require("./auth");
+const { autenticar } = require("../middlewares/authMiddleware");
 
 // Soma as horas estudadas na disciplina da meta, dentro do período da meta
 async function horasDaMeta(usuarioId, meta) {

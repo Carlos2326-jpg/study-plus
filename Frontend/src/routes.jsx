@@ -20,6 +20,8 @@ import Metas from "./Pages/Metas";
 import Progresso from "./Pages/Progresso";
 import Planejamento from "./Pages/Planejamento";
 import Navbar from "./Components/layout/Navbar";
+import Disciplinas from "./Pages/Disciplinas";
+import Perfil from "./Pages/Perfil";
 
 const RotaProtegida = ({ children }) => {
   const { usuario, loading } = useAuth();
@@ -75,9 +77,7 @@ const RouterComponent = () => {
           path="/perfil"
           element={
             <RotaComNav>
-              <div style={{ padding: "20px" }}>
-                <h1>Seu Perfil</h1>
-              </div>
+              <Perfil />
             </RotaComNav>
           }
         />
@@ -110,6 +110,14 @@ const RouterComponent = () => {
           element={
             <RotaComNav>
               <Planejamento />
+            </RotaComNav>
+          }
+        />
+                <Route
+          path="/disciplinas"
+          element={
+            <RotaComNav>
+              <Disciplinas />
             </RotaComNav>
           }
         />

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
-const { autenticar } = require("./auth");
+const { autenticar } = require("../middlewares/authMiddleware");
 
 // GET /sessoes
 router.get("/", autenticar, async (req, res) => {

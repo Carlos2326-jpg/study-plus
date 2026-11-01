@@ -5,6 +5,7 @@ import '../../Assets/Styles/button.css';
 function Button({
   type = 'button',
   text,
+  children,
   onClick,
   className = 'button',
   disabled = false,
@@ -22,7 +23,7 @@ function Button({
       {imgPosition === 'left' && imgSrc && (
         <img src={imgSrc} alt={imgAlt} className="btn-img" />
       )}
-      <span>{text}</span>
+      <span>{text ?? children}</span>
       {imgPosition === 'right' && imgSrc && (
         <img src={imgSrc} alt={imgAlt} className="btn-img" />
       )}

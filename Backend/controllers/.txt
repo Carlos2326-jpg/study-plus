@@ -1,1 +1,0 @@
-Coordena as requisições e respostas HTTP

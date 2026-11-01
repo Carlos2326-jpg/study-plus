@@ -30,7 +30,7 @@ export const RecuperarSenhaForm = ({ onVoltarLogin }) => {
     <form onSubmit={handleSubmit} className="login-form">
       <h2>Recuperar Senha</h2>
       <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
-        Insira seu e-mail cadastrado e enviaremos um link seguro para criar uma nova senha.
+      Insira seu e-mail cadastrado e enviaremos um código de verificação para criar uma nova senha.
       </p>
 
       {erro && <div className="error-message">{erro}</div>}
@@ -48,7 +48,7 @@ export const RecuperarSenhaForm = ({ onVoltarLogin }) => {
       </article>
 
       <Button type="submit" disabled={loading}>
-        {loading ? 'Enviando...' : 'Enviar Link'}
+        {loading ? 'Enviando...' : 'Enviar Código'}
       </Button>
 
       <article className="form-actions">
