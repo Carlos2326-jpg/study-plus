@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --verde-escuro: #1a472a;
+  --verde-medio: #2d6a4f;
+  --verde-claro: #52b788;
+  --verde-suave: #b7e4c7;
+  --verde-bg: #f0f7f2;
+  --branco: #ffffff;
+  --cinza-50: #f8faf8;
+  --cinza-100: #f1f5f1;
+  --cinza-200: #e2e8e2;
+  --cinza-400: #94a394;
+  --cinza-600: #4a5e4a;
+  --cinza-800: #1e2d1e;
+  --texto-principal: #1a2e1a;
+  --texto-secundario: #4a5e4a;
+  --sombra-suave: 0 2px 12px rgba(26, 71, 42, 0.08);
+  --sombra-media: 0 4px 24px rgba(26, 71, 42, 0.12);
+  --raio: 12px;
+  --raio-lg: 20px;
+}
+
+body {
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  background-color: var(--verde-bg);
+  color: var(--texto-principal);
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* ── Utilitários reutilizáveis ─────────────────────────────── */
+
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.card {
+  background: var(--branco) !important;
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-suave);
+  border: 1px solid var(--cinza-200);
+  padding: 1.5rem;
+}
+
+.card-sm {
+  background: var(--branco) !important;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-suave);
+  border: 1px solid var(--cinza-200);
+  padding: 1rem 1.25rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--verde-escuro);
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  color: var(--texto-secundario);
+  margin-bottom: 1.5rem;
+}
+
+/* Botões */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.1s;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: var(--verde-medio);
+  border: 1.5px solid var(--verde-claro);
+  border-radius: var(--raio);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--verde-suave);
+  color: var(--verde-escuro);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--texto-secundario);
+  border: none;
+  border-radius: var(--raio);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  background: var(--cinza-100);
+  color: var(--texto-principal);
+}
+
+/* Inputs */
+.input-field {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--cinza-200);
+  border-radius: var(--raio);
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--texto-principal);
+  background: var(--cinza-50);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--verde-claro);
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
+  background: var(--branco);
+}
+
+/* Badge / tags */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.badge-verde {
+  background: var(--verde-suave);
+  color: var(--verde-escuro);
+}
+
+.badge-cinza {
+  background: var(--cinza-100);
+  color: var(--cinza-600);
+}
+
+/* Feedback */
+.msg-erro {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.msg-sucesso {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio);
+  font-size: 0.875rem;
+  font-weight: 500;
+}

@@ -1,0 +1,20 @@
+@import url(../../../Assets/Styles//global.css);
+
+.header {
+  border: 1px solid #a5a5a5;
+  border-radius: 0 0 35px 35px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #e8e8e8;
+
+  width: 647px;
+  height: 170px;
+}
+
+.header-title {
+  font-size: 64px;
+  font-weight: bold;
+}

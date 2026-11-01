@@ -1,0 +1,150 @@
+.cal-comp-container {
+  display: flex;
+  flex-direction: column;
+  background: var(--branco);
+  border-radius: var(--raio-lg);
+  border: 1px solid var(--cinza-200);
+  overflow: hidden;
+  box-shadow: var(--sombra-suave);
+}
+
+.cal-comp-header {
+  background: var(--verde-escuro);
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-comp-titulo-mes {
+  color: var(--branco);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.cal-comp-btn-nav {
+  background: none;
+  border: none;
+  color: var(--branco);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+
+.cal-comp-btn-nav:hover { opacity: 1; }
+
+.cal-comp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-top: 1px solid var(--cinza-200);
+}
+
+.cal-comp-header-dia {
+  text-align: center;
+  padding: 0.6rem 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  background: var(--cinza-50);
+  border-bottom: 1px solid var(--cinza-200);
+  border-right: 1px solid var(--cinza-100);
+}
+
+.cal-comp-celula {
+  padding: 0.5rem 0.4rem;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-bottom: 1px solid var(--cinza-100);
+  border-right: 1px solid var(--cinza-100);
+  background: var(--branco);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cal-comp-celula:hover { background: var(--verde-bg); }
+
+.cal-comp-celula--hoje { background: var(--verde-bg); }
+.cal-comp-celula--hoje .cal-comp-num-dia {
+  color: var(--verde-escuro);
+  font-weight: 700;
+}
+
+.cal-comp-celula--selecionado { background: var(--verde-suave); }
+
+.cal-comp-celula--fora {
+  opacity: 0.35;
+  cursor: default;
+  background: var(--cinza-50);
+}
+
+.cal-comp-celula--fora:hover { background: var(--cinza-50); }
+
+.cal-comp-num-dia {
+  font-size: 0.82rem;
+  color: var(--texto-principal);
+}
+
+.cal-comp-pontinhos { display: flex; gap: 2px; }
+
+.cal-comp-ponto {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.cal-comp-painel {
+  padding: 1rem 1.25rem;
+  background: var(--cinza-50);
+  border-top: 1px solid var(--cinza-200);
+}
+
+.cal-comp-painel-titulo {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--verde-escuro);
+  margin-bottom: 0.6rem;
+}
+
+.cal-comp-vazio {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.cal-comp-tarefa-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--cinza-100);
+}
+
+.cal-comp-tarefa-item:last-child { border-bottom: none; }
+
+.cal-comp-tarefa-infos { display: flex; align-items: center; gap: 0.5rem; }
+
+.cal-comp-ponto-disc {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.cal-comp-tarefa-titulo {
+  font-size: 0.875rem;
+  color: var(--texto-principal);
+  font-weight: 500;
+}
+
+.cal-comp-tarefa-disc {
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+}
