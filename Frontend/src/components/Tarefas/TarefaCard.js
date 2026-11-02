@@ -4,6 +4,7 @@ import {
   toggleSubtarefa, excluirSubtarefa, criarSubtarefa,
   calcularProgresso, alterarStatusTarefa, excluirTarefa,
 } from "../../Controllers/tarefaController.js";
+import { formatarData } from "../../Utils/formatters";
 
 const prioridadeCor = { alta: "#dc2626", media: "#d97706", baixa: "#16a34a" };
 
@@ -40,7 +41,7 @@ const TarefaCard = ({ tarefa, disciplinas = [], subtarefasState = [], setSubtare
         <div className="tc-info">
           <span className="tc-titulo">{tarefa.titulo}</span>
           <div className="tc-detalhes">
-            {tarefa.prazo && <span className="tc-detalhe">📅 {new Date(tarefa.prazo).toLocaleDateString("pt-BR")}</span>}
+            {tarefa.prazo && <span className="tc-detalhe">📅 {formatarData(tarefa.prazo)}</span>}
             {disciplina  && <span className="tc-detalhe">📚 {disciplina.nome}</span>}
             <span className="tc-detalhe tc-prioridade" style={{ color: prioridadeCor[tarefa.prioridade] }}>
               🔰 {tarefa.prioridade}

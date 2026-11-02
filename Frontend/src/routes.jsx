@@ -22,6 +22,7 @@ import Planejamento from "./Pages/Planejamento";
 import Navbar from "./Components/layout/Navbar";
 import Disciplinas from "./Pages/Disciplinas";
 import Perfil from "./Pages/Perfil";
+import Notificacoes from "./Pages/Notificacoes";
 
 const RotaProtegida = ({ children }) => {
   const { usuario, loading } = useAuth();
@@ -118,6 +119,14 @@ const RouterComponent = () => {
           element={
             <RotaComNav>
               <Disciplinas />
+            </RotaComNav>
+          }
+        />
+                <Route
+          path="/notificacoes"
+          element={
+            <RotaComNav>
+              <Notificacoes />
             </RotaComNav>
           }
         />

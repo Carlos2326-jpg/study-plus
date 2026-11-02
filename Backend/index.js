@@ -17,6 +17,7 @@ const metasRoutes = require("./rout/metaRoutes.js");
 const sessoesRoutes = require("./rout/sessoes.js");
 const disciplinasRoutes = require("./rout/disciplinaRoutes.js");
 const relatoriosRoutes = require("./rout/relatorioRoutes.js");
+const notificacoesRoutes = require("./rout/notificacaoRoutes.js");
 
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/sessoes", sessoesRoutes);
 app.use("/registros-tempo", sessoesRoutes);
 app.use("/disciplinas", disciplinasRoutes);
 app.use("/relatorios", relatoriosRoutes);
+app.use("/notificacoes", notificacoesRoutes);
 app.use(naoEncontrado);              
 app.use(errorHandler); 
 
