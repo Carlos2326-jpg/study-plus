@@ -13,6 +13,13 @@ const DisciplinaModel = {
     return rows[0] || null;
   },
 
+  buscarPorNome: async (nome, usuario_id) => {
+    const [rows] = await pool.query(
+      "SELECT * FROM Disciplina WHERE nome = ? AND usuario_id = ?", [nome, usuario_id]
+    );
+    return rows[0] || null;
+  },
+
   criar: async ({ usuario_id, nome, descricao }) => {
     const [result] = await pool.query(
       "INSERT INTO Disciplina (usuario_id, nome, descricao) VALUES (?, ?, ?)",

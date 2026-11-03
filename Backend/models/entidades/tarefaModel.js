@@ -1,7 +1,14 @@
 const pool = require("../../config/db.js");
 
 const TarefaModel = {
-  listar: async (usuario_id, filtros = {}) => {
+    listar: async (usuario_id, filtros = {}) => {
+    const ORDENACAO = {
+      prazo: "prazo IS NULL, prazo ASC",
+      prioridade: "FIELD(prioridade, 'alta', 'media', 'baixa')",
+      titulo: "titulo ASC",
+      criado_em: "criado_em DESC",
+    };
+
     let query = "SELECT * FROM Tarefa WHERE usuario_id = ?";
     const params = [usuario_id];
 
@@ -9,6 +16,11 @@ const TarefaModel = {
     if (filtros.prioridade) { query += " AND prioridade = ?"; params.push(filtros.prioridade); }
     if (filtros.disciplina_id) { query += " AND disciplina_id = ?"; params.push(filtros.disciplina_id); }
     if (filtros.titulo) { query += " AND titulo LIKE ?"; params.push(`%${filtros.titulo}%`); }
+    if (filtros.data_inicio) { query += " AND prazo >= ?"; params.push(filtros.data_inicio); }
+    if (filtros.data_fim) { query += " AND prazo <= ?"; params.push(filtros.data_fim); }
+
+    // Só aceita campos da lista (evita injeção pelo parâmetro "ordenar")
+    query += ` ORDER BY ${ORDENACAO[filtros.ordenar] || "id ASC"}`;
 
     const [rows] = await pool.query(query, params);
     return rows;

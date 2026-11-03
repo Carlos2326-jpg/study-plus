@@ -98,7 +98,7 @@ export default function Planejamento() {
       await carregar();
       setTimeout(() => setMensagem(""), 3000);
     } catch (e) {
-      setErro(e.message);
+      setErro(e.response?.data?.message || e.message);
     }
   }
 

@@ -69,4 +69,4 @@ async function obterProgresso(id, usuarioId) {
   };
 }
 
-module.exports = { listar, buscar, criar, atualizar, excluir, obterProgresso };
+module.exports = { listar, buscar, criar, atualizar, excluir, obterProgresso, calcularPercentual };
