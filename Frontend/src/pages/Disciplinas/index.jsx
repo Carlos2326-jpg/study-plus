@@ -2,13 +2,17 @@ import React, { useState, useEffect } from "react";
 import { disciplinaService } from "../../Services/disciplinaService";
 import "./Disciplinas.css";
 
+const mensagemDoErro = (e) => e?.response?.data?.message || e?.message || "Erro inesperado.";
+const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+
 export default function Disciplinas() {
-  const [disciplinas, setDisciplinas] = useState([]);
+  const [lista, setLista] = useState([]);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [mostrarForm, setMostrarForm] = useState(false);
+  const [editandoId, setEditandoId] = useState(null);
   const [erro, setErro] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     carregar();
@@ -16,99 +20,129 @@ export default function Disciplinas() {
 
   async function carregar() {
     try {
-      setDisciplinas(await disciplinaService.listar());
-    } catch {
-      setErro("Não foi possível carregar as disciplinas.");
+      setLista(await disciplinaService.listar());
+    } catch (e) {
+      setErro(mensagemDoErro(e));
+    } finally {
+      setCarregando(false);
     }
   }
 
-  function cancelar() {
-    setMostrarForm(false);
+  function avisar(texto) {
+    setMensagem(texto);
+    setTimeout(() => setMensagem(""), 3000);
+  }
+
+  function limpar() {
     setNome("");
     setDescricao("");
+    setEditandoId(null);
     setErro("");
+  }
+
+  function editar(d) {
+    setEditandoId(d.id);
+    setNome(d.nome);
+    setDescricao(d.descricao || "");
+    setErro("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function salvar(e) {
     e.preventDefault();
     setErro("");
-    if (!nome.trim()) return setErro("Informe o nome da disciplina.");
+    if (!nome.trim()) {
+      setErro("Informe o nome da disciplina.");
+      return;
+    }
     try {
-      await disciplinaService.criar(nome.trim(), descricao.trim());
-      cancelar();
-      setMensagem("Disciplina criada!");
+      if (editandoId) {
+        await disciplinaService.atualizar(editandoId, nome.trim(), descricao.trim());
+        avisar("Disciplina atualizada!");
+      } else {
+        await disciplinaService.criar(nome.trim(), descricao.trim());
+        avisar("Disciplina criada!");
+      }
+      limpar();
       await carregar();
-      setTimeout(() => setMensagem(""), 3000);
     } catch (err) {
-      setErro(err.response?.data?.message || "Erro ao criar disciplina.");
+      setErro(mensagemDoErro(err));
+    }
+  }
+
+  async function excluir(d) {
+    setErro("");
+    if (!window.confirm(`Excluir a disciplina "${d.nome}"?`)) return;
+    try {
+      await disciplinaService.excluir(d.id);
+      if (editandoId === d.id) limpar();
+      avisar("Disciplina excluída.");
+      await carregar();
+    } catch (err) {
+      setErro(mensagemDoErro(err));
     }
   }
 
   return (
     <div className="disc-page">
-      <div className="disc-header">
-        <h1 className="disc-titulo">Disciplinas</h1>
-        <button className="disc-btn-nova" onClick={() => setMostrarForm(true)}>
-          + Nova Disciplina
-        </button>
-      </div>
+      <h1 className="disc-titulo">Disciplinas</h1>
+
+      <form className="disc-form" onSubmit={salvar}>
+        <h2>{editandoId ? "Editar disciplina" : "Nova disciplina"}</h2>
+        <input
+          className="disc-input"
+          type="text"
+          placeholder="Nome da disciplina"
+          maxLength={100}
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+        />
+        <input
+          className="disc-input"
+          type="text"
+          placeholder="Descrição (opcional)"
+          maxLength={255}
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+        />
+        {erro && <p className="disc-erro">{erro}</p>}
+        <div className="disc-form-acoes">
+          <button type="submit" className="disc-btn disc-btn-principal">
+            {editandoId ? "Salvar alterações" : "Adicionar"}
+          </button>
+          {editandoId && (
+            <button type="button" className="disc-btn" onClick={limpar}>
+              Cancelar
+            </button>
+          )}
+        </div>
+      </form>
 
       {mensagem && <p className="disc-sucesso">{mensagem}</p>}
 
-      {mostrarForm && (
-        <form className="disc-form" onSubmit={salvar}>
-          <h2>Nova Disciplina</h2>
-
-          <div className="disc-grupo">
-            <label>Nome</label>
-            <input
-              type="text"
-              maxLength={100}
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Ex.: Matemática"
-              autoFocus
-            />
-          </div>
-
-          <div className="disc-grupo">
-            <label>Descrição (opcional)</label>
-            <textarea
-              rows={3}
-              maxLength={255}
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              placeholder="Ex.: Cálculo 1"
-            />
-          </div>
-
-          {erro && <p className="disc-erro">{erro}</p>}
-
-          <div className="disc-acoes">
-            <button type="submit" className="disc-btn-salvar">Criar disciplina</button>
-            <button type="button" className="disc-btn-cancelar" onClick={cancelar}>
-              Cancelar
-            </button>
-          </div>
-        </form>
-      )}
-
-      {!mostrarForm && erro && <p className="disc-erro">{erro}</p>}
-
-      {disciplinas.length === 0 ? (
-        <div className="disc-vazio">
-          <p>Nenhuma disciplina cadastrada ainda.</p>
-          <p>Crie a primeira para usar nas tarefas e cronogramas!</p>
-        </div>
+      {carregando ? (
+        <p className="disc-vazio">Carregando...</p>
+      ) : lista.length === 0 ? (
+        <p className="disc-vazio">Nenhuma disciplina cadastrada ainda.</p>
       ) : (
-        <div className="disc-lista">
-          {disciplinas.map((d) => (
-            <div key={d.id} className="disc-card">
-              <span className="disc-nome">{d.nome}</span>
-              {d.descricao && <span className="disc-desc">{d.descricao}</span>}
-            </div>
+        <ul className="disc-lista">
+          {lista.map((d) => (
+            <li key={d.id} className="disc-item">
+              <div className="disc-info">
+                <strong>{d.nome}</strong>
+                {d.descricao && <span className="disc-desc">{d.descricao}</span>}
+                <span className="disc-vinculos">
+                  {plural(d.total_tarefas ?? 0, "tarefa", "tarefas")} ·{" "}
+                  {plural(d.total_cronogramas ?? 0, "cronograma", "cronogramas")}
+                </span>
+              </div>
+              <div className="disc-acoes">
+                <button className="disc-btn" onClick={() => editar(d)}>Editar</button>
+                <button className="disc-btn disc-btn-perigo" onClick={() => excluir(d)}>Excluir</button>
+              </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

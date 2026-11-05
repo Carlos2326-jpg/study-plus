@@ -4,42 +4,40 @@
 
 const express = require("express");
 const cors = require("cors");
-const loggingMiddleware = require("./middlewares/loggingMiddleware");
-const { naoEncontrado, errorHandler } = require("./middlewares/errorHandler");
 require("dotenv").config();
 
-const usuarioRoutes = require("./rout/usuarioRoutes.js");
-const tarefasRoutes = require("./rout/tarefaRoutes.js");
-const cronogramasRoutes = require("./rout/cronogramas.js");
-const authRoutes = require("./rout/authRoutes.js");
-const dashboardRoutes = require("./rout/dashboardRoutes.js");
-const metasRoutes = require("./rout/metaRoutes.js");
-const sessoesRoutes = require("./rout/sessoes.js");
-const disciplinasRoutes = require("./rout/disciplinaRoutes.js");
-const relatoriosRoutes = require("./rout/relatorioRoutes.js");
-const notificacoesRoutes = require("./rout/notificacaoRoutes.js");
+const loggingMiddleware = require("./middlewares/loggingMiddleware");
+const { naoEncontrado, errorHandler } = require("./middlewares/errorHandler");
 
+const authRoutes = require("./routes/authRoutes.js");
+const usuarioRoutes = require("./routes/usuarioRoutes.js");
+const disciplinaRoutes = require("./routes/disciplinaRoutes.js");
+const tarefaRoutes = require("./routes/tarefaRoutes.js");
+const metaRoutes = require("./routes/metaRoutes.js");
+const estudoRoutes = require("./routes/estudoRoutes.js");
+const notificacaoRoutes = require("./routes/notificacaoRoutes.js");
+const dashboardRoutes = require("./routes/dashboardRoutes.js");
+const relatorioRoutes = require("./routes/relatorioRoutes.js");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-app.use(loggingMiddleware); 
+app.use(loggingMiddleware);
 
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuarioRoutes);
-app.use("/tarefas", tarefasRoutes);
-app.use("/cronogramas", cronogramasRoutes);
+app.use("/disciplinas", disciplinaRoutes);
+app.use("/tarefas", tarefaRoutes);
+app.use("/metas", metaRoutes);
+app.use(estudoRoutes); // /cronogramas, /sessoes e /registros-tempo
+app.use("/notificacoes", notificacaoRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/metas", metasRoutes);
-app.use("/sessoes", sessoesRoutes);
-app.use("/registros-tempo", sessoesRoutes);
-app.use("/disciplinas", disciplinasRoutes);
-app.use("/relatorios", relatoriosRoutes);
-app.use("/notificacoes", notificacoesRoutes);
-app.use(naoEncontrado);              
-app.use(errorHandler); 
+app.use("/relatorios", relatorioRoutes);
+
+app.use(naoEncontrado);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

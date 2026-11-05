@@ -1,4 +1,4 @@
-const pool = require("../../config/db.js");
+const pool = require("../../acesso_dados/dbConnection");
 
 const MetaModel = {
   listar: async (usuarioId) => {

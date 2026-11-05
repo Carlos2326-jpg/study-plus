@@ -131,7 +131,7 @@ async function listarSubtarefas(tarefaId, usuarioId) {
 async function criarSubtarefa(tarefaId, usuarioId, dados) {
   const titulo = validarTituloSubtarefa(dados.titulo);
   await buscarOuFalhar(tarefaId, usuarioId);
-  const criada = await SubtarefaModel.criar(tarefaId, titulo);
+    const criada = await SubtarefaModel.criar(Number(tarefaId), titulo);
   await sincronizarEstado(tarefaId, usuarioId);
   return criada;
 }

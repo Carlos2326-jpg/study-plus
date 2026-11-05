@@ -1,4 +1,4 @@
-const pool = require("../../config/db.js");
+const pool = require("../dbConnection");
 
 // Monta o WHERE das sessões de estudo (período e disciplina são opcionais)
 function filtroSessoes(usuarioId, { inicio, fim, disciplina } = {}) {

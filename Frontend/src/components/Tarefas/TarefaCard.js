@@ -27,11 +27,25 @@ const TarefaCard = ({ tarefa, disciplinas = [], subtarefasState = [], setSubtare
     if (!novaSubtarefa.trim()) return;
     try {
       const nova = await subtarefaService.criar(tarefa.id, novaSubtarefa.trim());
-      setSubtarefas((prev) => [...prev, nova]);
+      setSubtarefas((prev) => [...prev, { ...nova, tarefa_id: tarefa.id }]);
       sincronizarStatus([...subtarefasDaTarefa, nova]);
       setNovaSubtarefa("");
     } catch (err) {
       console.error("Erro ao criar subtarefa:", err);
+    }
+  };
+
+    const handleEditarSubtarefa = async (sub) => {
+    const novo = window.prompt("Editar subtarefa:", sub.titulo);
+    if (novo === null) return;
+    const titulo = novo.trim();
+    if (!titulo || titulo === sub.titulo) return;
+    try {
+      await subtarefaService.atualizar(sub.id, { titulo, concluida: sub.concluida });
+      setSubtarefas((prev) => prev.map((s) => (s.id === sub.id ? { ...s, titulo } : s)));
+    } catch (err) {
+      console.error("Erro ao editar subtarefa:", err);
+      alert(err.response?.data?.message || "Erro ao editar subtarefa.");
     }
   };
 
@@ -94,9 +108,9 @@ const TarefaCard = ({ tarefa, disciplinas = [], subtarefasState = [], setSubtare
       )}
 
       {subtarefasDaTarefa.length > 0 && (
-        <button className="tc-btn-expandir" onClick={() => setExpandido(!expandido)}>
-          {expandido ? "▲ Ocultar subtarefas" : "▼ Ver subtarefas"}
-        </button>
+      <button className="tc-btn-expandir" onClick={() => setExpandido(!expandido)}>
+        {expandido ? "▲ Ocultar subtarefas" : `▼ Subtarefas (${subtarefasDaTarefa.length})`}
+      </button>
       )}
 
       {expandido && (
@@ -118,6 +132,7 @@ const TarefaCard = ({ tarefa, disciplinas = [], subtarefasState = [], setSubtare
               <span className={`tc-sub-texto${sub.concluida ? " tc-sub-concluida" : ""}`}>
                 {sub.titulo}
               </span>
+              <button className="tc-btn-excluir-sub" title="Editar" onClick={() => handleEditarSubtarefa(sub)}>✎</button>
               <button className="tc-btn-excluir-sub" onClick={() => excluirSubtarefa(sub.id, setSubtarefas)}>✕</button>
             </div>
           ))}

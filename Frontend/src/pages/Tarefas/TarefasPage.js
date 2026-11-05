@@ -50,6 +50,12 @@ const TarefasPage = () => {
         setTarefas((prev) =>
           prev.map((t) => t.id === tarefaEditando.id ? { ...t, ...dados } : t)
         );
+        const novasSubs = [];
+        for (const s of subtarefasForm) {
+          const novaSub = await subtarefaService.criar(tarefaEditando.id, s.titulo);
+          novasSubs.push({ ...novaSub, tarefa_id: tarefaEditando.id });
+        }
+        if (novasSubs.length) setSubtarefas((prev) => [...prev, ...novasSubs]);
       } else {
         const novaTarefa = await tarefaService.criar({ ...dados, usuario_id: 1 });
         const tarefaProntaParaCard = {

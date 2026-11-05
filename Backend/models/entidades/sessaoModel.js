@@ -1,4 +1,4 @@
-const pool = require("../../config/db.js");
+const pool = require("../../acesso_dados/dbConnection");
 
 // Traz também os segundos decorridos, calculados pelo relógio do banco
 const SELECT = `SELECT s.*,

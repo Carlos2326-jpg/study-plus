@@ -1,4 +1,4 @@
-const pool = require("../../config/db.js");
+const pool = require("../../acesso_dados/dbConnection");
 
 // Devolve também os nomes que o Planejamento usa (data_inicio, data_fim, horario_*)
 const SELECT = `SELECT c.*, d.nome AS disciplina,

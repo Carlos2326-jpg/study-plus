@@ -1,4 +1,4 @@
-const pool = require("../../config/db.js");
+const pool = require("../../acesso_dados/dbConnection");
 
 const NotificacaoModel = {
   // Tarefas não concluídas, atrasadas ou com prazo dentro da janela de alerta

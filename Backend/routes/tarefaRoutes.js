@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { autenticar } = require("../middlewares/authMiddleware");
-const { exigirCampos, validarId } = require("../middlewares/validationMiddleware");
+const { autenticar } = require("../middlewares/authMiddleware.js");
+const { exigirCampos, validarId } = require("../middlewares/validationMiddleware.js");
 const {
   listarTarefas, buscarTarefa, criarTarefa, atualizarTarefa, excluirTarefa,
   listarSubtarefas, criarSubtarefa, atualizarSubtarefa, excluirSubtarefa,

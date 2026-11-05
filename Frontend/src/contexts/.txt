@@ -1,1 +1,0 @@
-Compartilha estados entre componentes, se necessário

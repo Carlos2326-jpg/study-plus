@@ -9,4 +9,12 @@ export const disciplinaService = {
     const res = await api.post("/disciplinas", { nome, descricao });
     return res.data;
   },
+  atualizar: async (id, nome, descricao = "") => {
+    const res = await api.put(`/disciplinas/${id}`, { nome, descricao });
+    return res.data;
+  },
+  excluir: async (id) => {
+    const res = await api.delete(`/disciplinas/${id}`);
+    return res.data;
+  },
 };
