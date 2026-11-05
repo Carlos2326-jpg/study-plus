@@ -1,0 +1,64 @@
+@import url(../../../Assets/Styles/global.css);
+
+.login-form {
+  border: 1px solid black;
+  border-radius: 20px;
+
+  width: 626px;
+  height: 634px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  margin-top: 67px;
+  margin-bottom: 88px;
+
+  background-color: #d9d9d9;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+}
+
+.img-forms {
+  width: 80px;
+  height: 80px;
+
+  border: 1px solid black;
+  border-radius: 100%;
+}
+
+.input-field {
+  border: 1px solid black;
+  border-radius: 15px;
+
+  width: 366px;
+  height: 76px;
+
+  font-size: 24px;
+
+  margin: 30px;
+  padding: 10px;
+}
+
+.form-actions {
+  margin-top: 48px;
+
+  display: flex;
+  justify-content: space-around;
+}
+
+.form-actions > span {
+  font-size: 24px;
+
+  margin: 0px 34px 0px 34px;
+
+  color: #0045f5;
+}
+
+.form-actions > span:hover {
+  color: #0037c3;
+}

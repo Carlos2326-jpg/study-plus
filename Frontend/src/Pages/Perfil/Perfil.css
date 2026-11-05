@@ -1,0 +1,34 @@
+.perfil-page { max-width: 520px; margin: 0 auto; padding: 2rem 1.5rem; }
+.perfil-titulo { font-size: 1.8rem; font-weight: 700; color: var(--verde-escuro); margin-bottom: 1.5rem; }
+
+.perfil-form {
+  background: var(--cinza-50);
+  border: 1.5px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  padding: 1.5rem;
+}
+
+.perfil-grupo { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+.perfil-grupo label { font-weight: 600; font-size: 0.9rem; }
+.perfil-grupo input {
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid var(--cinza-200);
+  border-radius: var(--raio);
+  font: inherit;
+}
+.perfil-grupo input:disabled { background: #eef0f2; color: #6b7280; }
+.perfil-grupo small { color: #6b7280; }
+
+.perfil-btn {
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio);
+  font-weight: 600;
+  cursor: pointer;
+}
+.perfil-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.perfil-erro { color: #c0392b; font-weight: 600; margin-bottom: 1rem; }
+.perfil-sucesso { color: #1b7a3d; font-weight: 600; margin-bottom: 1rem; }
