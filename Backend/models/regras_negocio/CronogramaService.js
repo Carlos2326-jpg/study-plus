@@ -134,6 +134,9 @@ async function atualizar(id, usuarioId, body) {
   };
   // Se veio o nome da disciplina (Planejamento), ele prevalece sobre o id antigo
   if (body.disciplina !== undefined && body.disciplina_id === undefined) mesclado.disciplina_id = null;
+    // O Planejamento envia horario_*; eles devem prevalecer sobre os valores antigos
+  if (body.horario_inicio !== undefined) mesclado.hora_inicio = body.horario_inicio;
+  if (body.horario_fim !== undefined) mesclado.hora_fim = body.horario_fim;
 
   const c = await normalizar(usuarioId, mesclado);
   if (c.fim !== c.inicio)

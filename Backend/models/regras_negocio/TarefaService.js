@@ -45,10 +45,10 @@ async function normalizar(usuarioId, d) {
   return { titulo, prioridade, status, prazo, disciplina_id };
 }
 
-// Progresso (0 a 100) pelas subtarefas concluídas
+// Progresso (0 a 100) pelas subtarefas concluídas; null se não houver subtarefas
 function calcularProgresso(tarefa, resumo) {
   if (tarefa.status === "concluida") return 100;
-  if (!resumo || resumo.total === 0) return 0;
+  if (!resumo || resumo.total === 0) return null;
   return Math.round((resumo.feitas / resumo.total) * 100);
 }
 
@@ -76,7 +76,7 @@ async function buscar(id, usuarioId) {
 async function criar(usuarioId, dados) {
   const t = await normalizar(usuarioId, dados);
   const criada = await TarefaModel.criar({ ...t, usuario_id: usuarioId });
-  return { ...criada, progresso: t.status === "concluida" ? 100 : 0 };
+  return { ...criada, progresso: t.status === "concluida" ? 100 : null };
 }
 
 async function atualizar(id, usuarioId, dados) {
@@ -93,7 +93,25 @@ async function excluir(id, usuarioId) {
   await TarefaModel.excluir(id);
   return { mensagem: "Tarefa excluída com sucesso." };
 }
+// Reflete as subtarefas no estado da tarefa-mãe (bloqueada não é alterada)
+async function sincronizarEstado(tarefaId, usuarioId) {
+  const tarefa = await TarefaModel.buscarPorId(tarefaId, usuarioId);
+  if (!tarefa || tarefa.status === "bloqueada") return;
 
+  const r = (await SubtarefaModel.resumoPorTarefas([Number(tarefaId)]))[tarefaId];
+  if (!r || r.total === 0) return;
+
+  const novo = r.feitas === r.total ? "concluida" : r.feitas > 0 ? "em_andamento" : "pendente";
+  if (novo === tarefa.status) return;
+
+  await TarefaModel.atualizar(tarefaId, {
+    titulo: tarefa.titulo,
+    prioridade: tarefa.prioridade,
+    status: novo,
+    prazo: tarefa.prazo ? textoData(tarefa.prazo) : null,
+    disciplina_id: tarefa.disciplina_id,
+  });
+}
 // ---------- Subtarefas ----------
 function validarTituloSubtarefa(titulo) {
   const t = String(titulo ?? "").trim();
@@ -113,7 +131,9 @@ async function listarSubtarefas(tarefaId, usuarioId) {
 async function criarSubtarefa(tarefaId, usuarioId, dados) {
   const titulo = validarTituloSubtarefa(dados.titulo);
   await buscarOuFalhar(tarefaId, usuarioId);
-  return SubtarefaModel.criar(tarefaId, titulo);
+  const criada = await SubtarefaModel.criar(tarefaId, titulo);
+  await sincronizarEstado(tarefaId, usuarioId);
+  return criada;
 }
 
 async function atualizarSubtarefa(id, usuarioId, dados) {
@@ -122,13 +142,16 @@ async function atualizarSubtarefa(id, usuarioId, dados) {
 
   const titulo = validarTituloSubtarefa(dados.titulo ?? existente.titulo);
   const concluida = comoBooleano(dados.concluida ?? existente.concluida);
-  return SubtarefaModel.atualizar(id, { titulo, concluida });
+  const atualizada = await SubtarefaModel.atualizar(id, { titulo, concluida });
+  await sincronizarEstado(existente.tarefa_id, usuarioId);
+  return atualizada;
 }
 
 async function excluirSubtarefa(id, usuarioId) {
   const existente = await SubtarefaModel.buscarPorId(id, usuarioId);
   if (!existente) throw new ErroNegocio(404, "Subtarefa não encontrada.");
   await SubtarefaModel.excluir(id);
+  await sincronizarEstado(existente.tarefa_id, usuarioId);
   return { mensagem: "Subtarefa excluída com sucesso." };
 }
 

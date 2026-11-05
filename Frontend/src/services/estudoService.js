@@ -70,12 +70,12 @@ export const estudoService = {
     return api.put(`/cronogramas/${id}`, dados);
   },
 
-  excluirCronograma: async (id) => {
+  excluirCronograma: async (id, serie = false) => {
     if (USE_MOCK) {
       cronogramasMock = cronogramasMock.filter((c) => c.id !== id);
       return { data: { success: true } };
     }
-    return api.delete(`/cronogramas/${id}`);
+    return api.delete(`/cronogramas/${id}`, { params: serie ? { serie: true } : {} });
   },
 
   validarConflito: async (dados) => {
@@ -130,4 +130,11 @@ export const estudoService = {
     }
     return api.post("/registros-tempo/manual", dados);
   },
+
+  sessaoAtiva: () => api.get("/sessoes/ativa"),
+  pausarSessao: (id) => api.put(`/sessoes/${id}/pausar`),
+  retomarSessao: (id) => api.put(`/sessoes/${id}/retomar`),
+  pingSessao: (id) => api.put(`/sessoes/${id}/ping`),
+  registrarBloco: (id) => api.put(`/sessoes/${id}/bloco`),
+  encerrarSessao: (id, anotacao = "") => api.put(`/sessoes/${id}/finalizar`, { anotacao }),
 };

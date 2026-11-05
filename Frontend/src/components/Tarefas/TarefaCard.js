@@ -16,10 +16,23 @@ const TarefaCard = ({ tarefa, disciplinas = [], subtarefasState = [], setSubtare
   const progresso = calcularProgresso(tarefa.id, subtarefasState);
   const subtarefasDaTarefa = subtarefasState.filter((s) => s.tarefa_id === tarefa.id);
 
-  const handleAdicionarSubtarefa = () => {
+  const sincronizarStatus = (subs) => {
+    if (tarefa.status === "bloqueada" || subs.length === 0) return;
+    const feitas = subs.filter((s) => s.concluida).length;
+    const novo = feitas === subs.length ? "concluida" : feitas > 0 ? "em_andamento" : "pendente";
+    if (novo !== tarefa.status) alterarStatusTarefa(tarefa.id, novo, setTarefas);
+  };
+
+    const handleAdicionarSubtarefa = async () => {
     if (!novaSubtarefa.trim()) return;
-    criarSubtarefa(tarefa.id, novaSubtarefa, setSubtarefas);
-    setNovaSubtarefa("");
+    try {
+      const nova = await subtarefaService.criar(tarefa.id, novaSubtarefa.trim());
+      setSubtarefas((prev) => [...prev, nova]);
+      sincronizarStatus([...subtarefasDaTarefa, nova]);
+      setNovaSubtarefa("");
+    } catch (err) {
+      console.error("Erro ao criar subtarefa:", err);
+    }
   };
 
   const handleExcluirTarefa = async () => {
@@ -95,6 +108,9 @@ const TarefaCard = ({ tarefa, disciplinas = [], subtarefasState = [], setSubtare
                 checked={sub.concluida}
                 onChange={async () => {
                   toggleSubtarefa(sub.id, setSubtarefas);
+                  sincronizarStatus(
+                    subtarefasDaTarefa.map((s) => (s.id === sub.id ? { ...s, concluida: !s.concluida } : s))
+                  );
                   try { await subtarefaService.atualizar(sub.id, { ...sub, concluida: !sub.concluida }); }
                   catch (err) { console.error("Erro ao atualizar subtarefa:", err); }
                 }}

@@ -2,9 +2,23 @@ import { useState, useEffect } from 'react';
 import { dashboardService } from '../Services/dashboardService';
 import { useAuth } from './authController';
 
+const PAINEL_VAZIO = {
+  totalTarefas: 0,
+  concluidas: 0,
+  pendentes: 0,
+  emAndamento: 0,
+  bloqueadas: 0,
+  atrasadas: 0,
+  percentualConcluido: 0,
+  horasSemana: 0,
+  horasMes: 0,
+  metas: { total: 0, ativas: 0, atingidas: 0 },
+  proximosEventos: [],
+};
+
 export const useDashboard = () => {
   const { usuario } = useAuth();
-  const [dados, setDados] = useState({ totalTarefas: 0, concluidas: 0, proximosEventos: [] });
+  const [dados, setDados] = useState(PAINEL_VAZIO);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
 
@@ -13,9 +27,9 @@ export const useDashboard = () => {
     try {
       setLoading(true);
       const metricas = await dashboardService.obterMetricas(usuario.id);
-      setDados(metricas);
+      setDados({ ...PAINEL_VAZIO, ...metricas });
     } catch (err) {
-      setErro(err);
+      setErro(typeof err === 'string' ? err : 'Erro ao carregar dados do painel.');
     } finally {
       setLoading(false);
     }
@@ -25,10 +39,8 @@ export const useDashboard = () => {
     carregarPainel();
   }, [usuario]);
 
-  // Calcula a porcentagem de tarefas feitas para o gráfico/barra de progresso
-  const porcentagemConclusao = dados.totalTarefas > 0 
-    ? Math.round((dados.concluidas / dados.totalTarefas) * 180) / 1.8 // Limita ou formata em %
-    : 0;
+  // O servidor já calcula o percentual de tarefas concluídas
+  const porcentagemConclusao = dados.percentualConcluido ?? 0;
 
   return { dados, loading, erro, porcentagemConclusao, recarregar: carregarPainel };
 };

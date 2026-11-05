@@ -110,6 +110,12 @@ async function produtividade(usuarioId, query = {}) {
   const totalTarefas = porEstado.reduce((soma, r) => soma + Number(r.total), 0);
   const tarefasConcluidas = Number(porEstado.find((r) => r.estado === "concluida")?.total || 0);
 
+  const distribuicao = porDisciplina.map((r) => ({
+    disciplina: r.disciplina,
+    horas: horas(Number(r.minutos)),
+    percentual: pct(Number(r.minutos), minutos),
+  }));
+
   return {
     periodo,
     totalHoras: horas(minutos),
@@ -117,11 +123,10 @@ async function produtividade(usuarioId, query = {}) {
     sessoes,
     tarefasConcluidas,
     totalTarefas,
-    distribuicao: porDisciplina.map((r) => ({
-      disciplina: r.disciplina,
-      horas: horas(Number(r.minutos)),
-      percentual: pct(Number(r.minutos), minutos),
-    })),
+    distribuicao,
+    disciplinaMaisEstudada: distribuicao[0]?.disciplina || null,
+    semDados: sessoes.length === 0,
+    mensagem: sessoes.length === 0 ? "Não há dados de estudo para o período selecionado." : null,
   };
 }
 

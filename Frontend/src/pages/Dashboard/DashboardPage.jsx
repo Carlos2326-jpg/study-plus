@@ -1,7 +1,7 @@
 import React from "react";
 import { useDashboard } from "../../Controllers/dashboardController";
 import { useNavigate } from "react-router-dom";
-import Button from "../../Components/ui/Button";
+import { formatarData } from "../../Utils/formatters";
 import "./Styles/DashboardPage.css";
 
 function DashboardPage() {
@@ -11,8 +11,6 @@ function DashboardPage() {
   if (loading)
     return <div className="loading-screen">Carregando painel... 🌱</div>;
 
-  const pendentes = dados.totalTarefas - dados.concluidas;
-
   return (
     <div className="dashboard-container">
       <main className="dashboard-content">
@@ -20,7 +18,7 @@ function DashboardPage() {
         <div className="dashboard-header">
           <div>
             <h1>Seu painel 🌱</h1>
-            <p>Acompanhe suas tarefas e compromissos de hoje.</p>
+            <p>Acompanhe suas tarefas, seu tempo de estudo e seus compromissos.</p>
           </div>
         </div>
 
@@ -30,7 +28,7 @@ function DashboardPage() {
         <section className="metrics-grid">
           <div className="metric-card">
             <span className="metric-card__label">Tarefas Pendentes</span>
-            <span className="metric-card__number">{pendentes}</span>
+            <span className="metric-card__number">{dados.pendentes}</span>
             <div className="metric-card__action">
               <button
                 className="btn-secondary"
@@ -43,10 +41,54 @@ function DashboardPage() {
           </div>
 
           <div className="metric-card">
+            <span className="metric-card__label">Em andamento</span>
+            <span className="metric-card__number">{dados.emAndamento}</span>
+          </div>
+
+          <div className="metric-card">
             <span className="metric-card__label">Concluídas</span>
             <span className="metric-card__number metric-card__number--destaque">
               {dados.concluidas}
             </span>
+          </div>
+
+          <div className="metric-card">
+            <span className="metric-card__label">Atrasadas</span>
+            <span
+              className="metric-card__number"
+              style={dados.atrasadas > 0 ? { color: "#dc2626" } : undefined}
+            >
+              {dados.atrasadas}
+            </span>
+          </div>
+
+          <div className="metric-card">
+            <span className="metric-card__label">Estudado na semana</span>
+            <span className="metric-card__number">{dados.horasSemana}h</span>
+          </div>
+
+          <div className="metric-card">
+            <span className="metric-card__label">Estudado no mês</span>
+            <span className="metric-card__number">{dados.horasMes}h</span>
+          </div>
+
+          <div className="metric-card">
+            <span className="metric-card__label">Metas</span>
+            <span className="metric-card__number">
+              {dados.metas.atingidas}/{dados.metas.total}
+            </span>
+            <span className="metric-card__label">
+              {dados.metas.ativas} ativa{dados.metas.ativas === 1 ? "" : "s"}
+            </span>
+            <div className="metric-card__action">
+              <button
+                className="btn-secondary"
+                style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}
+                onClick={() => navigate("/metas")}
+              >
+                Ver Metas
+              </button>
+            </div>
           </div>
 
           <div className="metric-card">
@@ -74,9 +116,7 @@ function DashboardPage() {
               {dados.proximosEventos.map((evento) => (
                 <li key={evento.id} className="event-item">
                   <span>{evento.titulo}</span>
-                  <span className="event-item__date">
-                    {new Date(evento.data).toLocaleDateString("pt-BR")}
-                  </span>
+                  <span className="event-item__date">{formatarData(evento.data)}</span>
                 </li>
               ))}
             </ul>

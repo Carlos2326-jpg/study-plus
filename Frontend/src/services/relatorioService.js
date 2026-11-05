@@ -33,7 +33,7 @@ export const relatorioService = {
     return api.get("/relatorios/produtividade", { params: filtros });
   },
 
-  buscarDadosGraficos: async () => {
+  buscarDadosGraficos: async (filtros = {}) => {
     if (USE_MOCK) {
       const porDisciplina = sessoesMock.reduce((acc, s) => {
         const key = s.disciplina;
@@ -64,6 +64,6 @@ export const relatorioService = {
 
       return { data: { barras, pizza, progresso } };
     }
-    return api.get("/relatorios/graficos");
+    return api.get("/relatorios/graficos", { params: filtros });
   },
 };

@@ -10,7 +10,7 @@ export async function buscarProdutividade(filtros = {}) {
   return res.data;
 }
 
-export async function buscarDadosGraficos() {
-  const res = await relatorioService.buscarDadosGraficos();
+export async function buscarDadosGraficos(filtros = {}) {
+  const res = await relatorioService.buscarDadosGraficos(filtros);
   return res.data;
 }

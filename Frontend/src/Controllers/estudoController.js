@@ -13,7 +13,6 @@ function validarCronograma(dados) {
   if (dados.horario_inicio && dados.horario_fim && dados.horario_inicio >= dados.horario_fim)
     erros.push("Horário de início deve ser anterior ao horário de fim");
   if (!dados.data_inicio) erros.push("Data de início é obrigatória");
-  if (!dados.data_fim) erros.push("Data de fim é obrigatória");
   return erros;
 }
 
@@ -30,16 +29,12 @@ export async function listarCronogramas() {
   return res.data;
 }
 
+// O servidor valida conflitos por data e devolve a mensagem exata
 export async function criarCronograma(dados) {
   const erros = validarCronograma(dados);
   if (erros.length) throw new Error(erros.join(", "));
-
-  const conflito = await estudoService.validarConflito(dados);
-  if (conflito.data.conflito)
-    throw new Error("Conflito de horário com cronograma existente");
-
   const res = await estudoService.criarCronograma(dados);
-  return res.data;
+  return res.data; // inclui "ocorrencias" (quantidade criada)
 }
 
 export async function atualizarCronograma(id, dados) {
@@ -49,8 +44,8 @@ export async function atualizarCronograma(id, dados) {
   return res.data;
 }
 
-export async function excluirCronograma(id) {
-  const res = await estudoService.excluirCronograma(id);
+export async function excluirCronograma(id, serie = false) {
+  const res = await estudoService.excluirCronograma(id, serie);
   return res.data;
 }
 
@@ -81,4 +76,25 @@ export async function registrarTempoManual(dados) {
     throw new Error("Duração é obrigatória");
   const res = await estudoService.registrarTempoManual(dados);
   return res.data;
+}
+
+// Temporizador (o servidor guarda o tempo e o estado)
+export async function sessaoAtiva() {
+  const res = await estudoService.sessaoAtiva();
+  return res.data || null;
+}
+export async function pausarSessao(id) {
+  return (await estudoService.pausarSessao(id)).data;
+}
+export async function retomarSessao(id) {
+  return (await estudoService.retomarSessao(id)).data;
+}
+export async function pingSessao(id) {
+  return (await estudoService.pingSessao(id)).data;
+}
+export async function registrarBloco(id) {
+  return (await estudoService.registrarBloco(id)).data;
+}
+export async function encerrarSessao(id, anotacao) {
+  return (await estudoService.encerrarSessao(id, anotacao)).data;
 }
