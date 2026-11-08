@@ -4,7 +4,7 @@ import {
   toggleSubtarefa, excluirSubtarefa, criarSubtarefa,
   calcularProgresso, alterarStatusTarefa, excluirTarefa,
 } from "../../Controllers/tarefaController.js";
-import { formatarData } from "../../Utils/formatters";
+import { formatarData } from "../../Utils/formatters.js";
 
 const prioridadeCor = { alta: "#dc2626", media: "#d97706", baixa: "#16a34a" };
 

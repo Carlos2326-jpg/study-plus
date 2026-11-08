@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TarefaCard from "./TarefaCard.js";
+import TarefaCard from "./TarefaCard.jsx";
 import { filtrarTarefas } from "../../Controllers/tarefaController.js";
 import "../../Assets/Styles/Tarefas.css";
 

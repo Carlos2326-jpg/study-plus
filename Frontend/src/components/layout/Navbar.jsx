@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../Controllers/authController";
 import { notificacaoService } from "../../Services/notificacaoService";
-import "./Navbar.css";
+import "../../Assets/Styles/Components/Navbar.css";
 
 const links = [
   { path: "/dashboard", label: "🏠 Dashboard" },

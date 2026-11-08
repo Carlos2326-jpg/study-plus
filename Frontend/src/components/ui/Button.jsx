@@ -1,6 +1,6 @@
 // src/Components/Button.jsx
 import React from 'react';
-import '../../Assets/Styles/button.css';
+import '../../Assets/Styles/Components/button.css';
 
 function Button({
   type = 'button',
@@ -9,9 +9,6 @@ function Button({
   onClick,
   className = 'button',
   disabled = false,
-  imgSrc = null,      // Caminho da imagem
-  imgAlt = null,   // Texto alternativo
-  imgPosition = 'right' // Posição: 'left' ou 'right'
 }) {
   return (
     <button
@@ -20,13 +17,7 @@ function Button({
       className={`btn ${className}`}
       disabled={disabled}
     >
-      {imgPosition === 'left' && imgSrc && (
-        <img src={imgSrc} alt={imgAlt} className="btn-img" />
-      )}
       <span>{text ?? children}</span>
-      {imgPosition === 'right' && imgSrc && (
-        <img src={imgSrc} alt={imgAlt} className="btn-img" />
-      )}
     </button>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { gerarDatasRecorrentes } from "../../Controllers/tarefaController.js";
-import "./Calendario.css";
+import "../../Assets/Styles/Components/Calendario.css";
 
 const diasSemana = ["Dom.", "Seg.", "Ter.", "Qua.", "Qui.", "Sex.", "Sáb."];
 const mesesNome = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];

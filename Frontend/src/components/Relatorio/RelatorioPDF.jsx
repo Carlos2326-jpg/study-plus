@@ -1,7 +1,4 @@
-// ============================================================
 // PDF do relatório de Progresso (react-pdf)
-// Study+
-// ============================================================
 
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
