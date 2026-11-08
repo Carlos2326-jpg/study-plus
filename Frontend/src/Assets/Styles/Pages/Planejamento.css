@@ -1,0 +1,217 @@
+.planejamento-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.planejamento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.planejamento-titulo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--verde-escuro);
+}
+
+.btn-novo {
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-novo:hover { opacity: 0.9; }
+
+.plano-form-container {
+  background: var(--cinza-50);
+  border: 1.5px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.plano-form-container h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--verde-escuro);
+  margin-bottom: 1rem;
+}
+
+.form-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.form-grupo label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+.form-grupo input,
+.form-grupo select {
+  padding: 0.6rem 0.875rem;
+  border: 2px solid var(--cinza-200);
+  border-radius: var(--raio);
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: var(--branco);
+  color: var(--texto-principal);
+  transition: border-color 0.2s;
+}
+
+.form-grupo input:focus,
+.form-grupo select:focus {
+  outline: none;
+  border-color: var(--verde-claro);
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
+}
+
+.form-linha {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-linha .form-grupo { flex: 1; }
+
+.form-acoes {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn-salvar {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-salvar:hover { opacity: 0.9; }
+
+.btn-cancelar {
+  padding: 0.6rem 1.2rem;
+  background: var(--branco);
+  color: var(--texto-secundario);
+  border: 1.5px solid var(--cinza-200);
+  border-radius: var(--raio);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-cancelar:hover { background: var(--cinza-100); }
+
+.planejamento-vazio {
+  text-align: center;
+  padding: 3rem;
+  color: var(--cinza-400);
+}
+
+.cronogramas-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1rem;
+}
+
+.cronograma-card {
+  background: var(--branco);
+  border: 1.5px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: var(--sombra-suave);
+  transition: box-shadow 0.2s;
+}
+
+.cronograma-card:hover { box-shadow: var(--sombra-media); }
+
+.cronograma-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cronograma-disciplina {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--verde-escuro);
+}
+
+.cronograma-recorrencia {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+}
+
+.rec-nenhuma { background: var(--cinza-100); color: var(--cinza-600); }
+.rec-diaria { background: var(--verde-suave); color: var(--verde-escuro); }
+.rec-semanal { background: #fef3c7; color: #d97706; }
+
+.cronograma-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+}
+
+.cronograma-acoes {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-editar {
+  padding: 0.4rem 1rem;
+  background: var(--branco);
+  color: var(--verde-medio);
+  border: 1.5px solid var(--verde-claro);
+  border-radius: var(--raio);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-editar:hover { background: var(--verde-suave); }
+
+.btn-excluir {
+  padding: 0.4rem 1rem;
+  background: var(--branco);
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+  border-radius: var(--raio);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-excluir:hover { background: #fef2f2; }
+
+.mensagem-sucesso {
+  color: #16a34a;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.mensagem-erro {
+  color: #ef4444;
+  font-weight: 600;
+}
