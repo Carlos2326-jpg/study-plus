@@ -1,14 +1,6 @@
-// ============================================================
-// SERVICE - Área 2: Tarefas, Subtarefas, Cronogramas
-// Study+
-// ============================================================
-
 import api from "./api.js";
 
-// ============================================================
 // TAREFAS
-// ============================================================
-
 export const tarefaService = {
 
   listar: async (filtros = {}) => {
@@ -37,10 +29,7 @@ export const tarefaService = {
   },
 };
 
-// ============================================================
 // SUBTAREFAS
-// ============================================================
-
 export const subtarefaService = {
 
   listarPorTarefa: async (tarefa_id) => {
@@ -64,10 +53,7 @@ export const subtarefaService = {
   },
 };
 
-// ============================================================
 // CRONOGRAMAS
-// ============================================================
-
 export const cronogramaService = {
 
   listar: async (usuario_id) => {

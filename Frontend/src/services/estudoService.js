@@ -1,8 +1,3 @@
-// ============================================================
-// SERVICE - Área 3: Estudo (Cronogramas + Sessões + Tempo)
-// Study+
-// ============================================================
-
 import api from "./api";
 
 export let cronogramasMock = [

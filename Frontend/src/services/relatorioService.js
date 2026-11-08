@@ -1,8 +1,3 @@
-// ============================================================
-// SERVICE - Área 3: Relatórios e Produtividade
-// Study+
-// ============================================================
-
 import api from "./api";
 import { sessoesMock } from "./estudoService";
 import { metasMock } from "./metaService";
