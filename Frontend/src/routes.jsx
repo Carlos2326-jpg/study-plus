@@ -3,26 +3,26 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./Controllers/authController";
 
 // Auth
-import { LoginPage } from "./Pages/Auth/LoginPage";
-import { CadastroPage } from "./Pages/Cadastro/CadastroPage";
-import { RecuperarSenhaPage } from "./Pages/Auth/RecuperarSenhaPage";
-import { ValidarCodigoPage } from "./Pages/Auth/ValidarCodigoPage";
+import { LoginPage } from "./Pages/Auth/LoginPage.jsx";
+import { CadastroPage } from "./Pages/Cadastro/CadastroPage.jsx";
+import { RecuperarSenhaPage } from "./Pages/Auth/RecuperarSenhaPage.jsx";
+import { ValidarCodigoPage } from "./Pages/Auth/ValidarCodigoPage.jsx";
 import { ResetarSenhaPage } from "./Pages/Auth/ResetarSenhaPage";
 
 // Páginas internas
-import DashboardPage from "./Pages/Dashboard/DashboardPage";
-import TarefasPage from "./Pages/Tarefas/TarefasPage";
-import CalendarioPage from "./Pages/Calendario/CalendarioPage";
+import DashboardPage from "./Pages/Dashboard/DashboardPage.jsx";
+import TarefasPage from "./Pages/Tarefas/TarefasPage.jsx";
+import CalendarioPage from "./Pages/Calendario/CalendarioPage.jsx";
 
 // Área 3
-import Temporizador from "./Pages/Temporizador";
-import Metas from "./Pages/Metas";
-import Progresso from "./Pages/Progresso";
-import Planejamento from "./Pages/Planejamento";
-import Navbar from "./Components/layout/Navbar";
-import Disciplinas from "./Pages/Disciplinas";
-import Perfil from "./Pages/Perfil";
-import Notificacoes from "./Pages/Notificacoes";
+import Temporizador from "./Pages/Temporizador/Temporizador.jsx";
+import Metas from "./Pages/Metas/Metas.jsx";
+import Progresso from "./Pages/Progresso/Progresso.jsx";
+import Planejamento from "./Pages/Planejamento/Planejamento.jsx";
+import Navbar from "./Components/layout/Navbar.jsx";
+import Disciplinas from "./Pages/Disciplinas/Diciplina.jsx";
+import Perfil from "./Pages/Perfil/Perfil.jsx";
+import Notificacoes from "./Pages/Notificacoes/Notificacoes.jsx";
 
 const RotaProtegida = ({ children }) => {
   const { usuario, loading } = useAuth();
