@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../Controllers/authController";
 import { authService } from "../../Services/authService";
-import "./Perfil.css";
+import "../../Assets/Styles/Pages/Perfil.css";
 
 export default function Perfil() {
   const { usuario, setUsuario } = useAuth();

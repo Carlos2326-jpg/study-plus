@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { disciplinaService } from "../../Services/disciplinaService";
-import "./Disciplinas.css";
+import "../../Assets/Styles/Pages/Disciplinas.css";
 
 const mensagemDoErro = (e) => e?.response?.data?.message || e?.message || "Erro inesperado.";
 const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;

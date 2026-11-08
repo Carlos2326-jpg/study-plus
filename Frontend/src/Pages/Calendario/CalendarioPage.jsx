@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import Calendario from "../../Components/Calendario/Calendario.js";
+import Calendario from "../../Components/Calendario/Calendario.jsx";
 import { cronogramaService, tarefaService } from "../../Services/tarefaService.js";
 import api from "../../Services/api.js";
-import "./CalendarioPage.css";
+import "../../Assets/Styles/Pages/CalendarioPage.css";
 
 const CalendarioPage = () => {
   const [tarefas, setTarefas] = useState([]);

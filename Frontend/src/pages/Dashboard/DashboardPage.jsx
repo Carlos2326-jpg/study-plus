@@ -2,7 +2,7 @@ import React from "react";
 import { useDashboard } from "../../Controllers/dashboardController";
 import { useNavigate } from "react-router-dom";
 import { formatarData } from "../../Utils/formatters";
-import "./Styles/DashboardPage.css";
+import "../../Assets/Styles/Pages/DashboardPage.css";
 
 function DashboardPage() {
   const { dados, loading, erro, porcentagemConclusao } = useDashboard();

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../../../Controllers/authController';
-import Button from '../../../../Components/ui/Button';
-import Input from '../../../../Components/ui/Input';
-import '../../Styles/LoginForm.css';
+import { useAuth } from '../../../Controllers/authController';
+import Button from '../../../Components/ui/Button';
+import Input from '../../../Components/ui/Input';
+import '../../../Assets/Styles/Pages/Forms/DefinirNovaSenhaForm.css';
 
 export const DefinirNovaSenhaForm = ({ tokenTemporario, onSucesso }) => {
   const [novaSenha, setNovaSenha] = useState('');

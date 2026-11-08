@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { LoginForm } from "./Components/Forms/LoginForm";
-import { RecuperarSenhaForm } from "./Components/Forms/RecuperarSenhaForm";
-import "./Styles/LoginForm.css";
+import { LoginForm } from "./Forms/LoginForm";
+import { RecuperarSenhaForm } from "./Forms/RecuperarSenhaForm";
+import "../../Assets/Styles/Pages/Login.css";
 
 export const LoginPage = () => {
   const [modoView, setModoView] = useState("login");

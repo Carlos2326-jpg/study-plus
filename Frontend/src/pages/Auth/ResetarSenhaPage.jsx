@@ -3,8 +3,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Controllers/authController';
 import Button from '../../Components/ui/Button';
 import Input from '../../Components/ui/Input';
-import Header from './Components/layout/Header';
-import './Styles/ResetarSenhaPage.css';
+import Header from '../../Components/layout/Header';
+import '../../Assets/Styles/Pages/ResetarSenhaPage.css';
 
 export const ResetarSenhaPage = () => {
   const [searchParams] = useSearchParams();

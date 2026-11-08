@@ -1,8 +1,3 @@
-// ============================================================
-// PAGE - Área 3: Metas
-// Study+
-// ============================================================
-
 import React, { useState, useEffect } from "react";
 import { TIPO_META } from "../../Utils/constants";
 import {
@@ -12,7 +7,7 @@ import {
   excluirMeta,
   buscarProgressoMeta,
 } from "../../Controllers/metaController";
-import "./Metas.css";
+import "../../Assets/Styles/Pages/Metas.css";
 import { disciplinaService } from "../../Services/disciplinaService";
 import { formatarData, formatarHorario } from "../../Utils/formatters";
 

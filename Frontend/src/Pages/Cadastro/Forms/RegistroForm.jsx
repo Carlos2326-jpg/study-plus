@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../../Controllers/authController";
-import "../../Styles/CadastroPage.css";
+import { useAuth } from "../../../Controllers/authController";
+import "../../../Assets/Styles/Pages/Forms/RegistroForm.css";
 
 export const RegistroForm = ({ onVoltarLogin }) => {
   const [nome, setNome] = useState("");

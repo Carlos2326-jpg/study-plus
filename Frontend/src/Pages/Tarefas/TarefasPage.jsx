@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import TarefaList from "../../Components/Tarefas/TarefaList.js";
-import TarefaForm from "../../Components/Forms/TarefaForm.js";
+import TarefaList from "../../Components/Tarefas/TarefaList.jsx";
+import TarefaForm from "../../Components/Forms/TarefaForm.jsx";
 import { tarefaService, subtarefaService } from "../../Services/tarefaService.js";
 import api from "../../Services/api.js";
 

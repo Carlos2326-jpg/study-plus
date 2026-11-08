@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { RegistroForm } from "./Components/Forms/RegistroForm";
-import "./Styles/CadastroPage.css";
+import { RegistroForm } from "./Forms/RegistroForm";
+import "../../Assets/Styles/Pages/CadastroPage.css";
 
 export const CadastroPage = () => {
   const navigate = useNavigate();

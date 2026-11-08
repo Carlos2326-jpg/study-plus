@@ -1,8 +1,3 @@
-// ============================================================
-// PAGE - Área 3: Progresso (relatório de desempenho e gráficos)
-// Study+
-// ============================================================
-
 import React, { useState, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -13,7 +8,7 @@ import {
   buscarProdutividade,
 } from "../../Controllers/relatorioController";
 import { disciplinaService } from "../../Services/disciplinaService";
-import "./Progresso.css";
+import "../../Assets/Styles/Pages/Progresso.css";
 
 const CORES = ["#6366f1", "#f59e0b", "#22c55e", "#ef4444", "#06b6d4"];
 

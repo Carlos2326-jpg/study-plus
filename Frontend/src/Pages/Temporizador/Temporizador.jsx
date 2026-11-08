@@ -1,8 +1,3 @@
-// ============================================================
-// PAGE - Área 3: Temporizador (tempo e estado guardados no servidor)
-// Study+
-// ============================================================
-
 import React, { useState, useEffect, useRef } from "react";
 import {
   TECNICA_TEMPO,
@@ -18,7 +13,7 @@ import {
   registrarBloco,
   encerrarSessao,
 } from "../../Controllers/estudoController";
-import "./Temporizador.css";
+import "../../Assets/Styles/Pages/Temporizador.css";
 import { disciplinaService } from "../../Services/disciplinaService";
 
 function formatarTempo(segundos) {

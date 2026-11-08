@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../../../Controllers/authController';
-import Button from '../../../../Components/ui/Button';
-import Input from '../../../../Components/ui/Input';
-import '../../Styles/LoginForm.css';
+import { useAuth } from '../../../Controllers/authController';
+import Button from '../../../Components/ui/Button';
+import Input from '../../../Components/ui/Input';
+import '../../../Assets/Styles/Pages/Forms/LoginForm.css';
 
 export const ValidarCodigoForm = ({ email, onCodigoValido, onVoltar }) => {
   const [codigo, setCodigo] = useState('');

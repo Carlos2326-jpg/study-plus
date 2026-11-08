@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Controllers/authController';
 import Button from '../../Components/ui/Button';
 import Input from '../../Components/ui/Input';
-import Header from '../Auth/Components/layout/Header';
-import styles from '../Auth/Styles/Login.css'; // Reaproveitando o estilo do card
-import '../Auth/Styles/LoginForm.css';
+import Header from '../../Components/layout/Header';
+import styles from '../../Assets/Styles/Pages/Login.css';
+import '../../Assets/Styles/Pages/ValidarCodigoPage.css';
 
 export const ValidarCodigoPage = () => {
   const [codigo, setCodigo] = useState('');

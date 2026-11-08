@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { notificacaoService } from "../../Services/notificacaoService";
-import "./Notificacoes.css";
+import "../../Assets/Styles/Pages/Notificacoes.css";
 
 const ICONES = {
   tarefa_atrasada: "⏰",

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from './Components/layout/Header';
+import Header from '../../Components/layout/Header';
 
 // Importação dos 3 sub-formulários do funil
-import { RecuperarSenhaForm } from './Components/Forms/RecuperarSenhaForm';
-import { ValidarCodigoForm } from './Components/Forms/ValidarCodigoForm';
-import { DefinirNovaSenhaForm } from './Components/Forms/DefinirNovaSenhaForm';
+import { RecuperarSenhaForm } from './Forms/RecuperarSenhaForm';
+import { ValidarCodigoForm } from './Forms/ValidarCodigoForm';
+import { DefinirNovaSenhaForm } from './Forms/DefinirNovaSenhaForm';
 
-import styles from '../Auth/Styles/Login.css'; // Reaproveita o estilo do card de login
+import styles from '../../Assets/Styles/Pages/Login.css'; // Reaproveita o estilo do card de login
 
 export const RecuperarSenhaPage = () => {
   const navigate = useNavigate();

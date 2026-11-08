@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../../Controllers/authController";
-import "../../Styles/LoginForm.css";
+import { useAuth } from "../../../Controllers/authController";
+import "../../../Assets/Styles/Pages/Forms/LoginForm.css";
 
 export const LoginForm = ({ onEsqueceuSenha }) => {
   const navigate = useNavigate();

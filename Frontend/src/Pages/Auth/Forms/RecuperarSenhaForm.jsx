@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../../Controllers/authController';
-import Button from '../../../../Components/ui/Button';
-import Input from '../../../../Components/ui/Input';
-import '../../Styles/RecuperarSenhaForm.css';
+import { useAuth } from '../../../Controllers/authController';
+import Button from '../../../Components/ui/Button';
+import Input from '../../../Components/ui/Input';
+import '../../../Assets/Styles/Pages/Forms/RecuperarSenhaForm.css';
 
 export const RecuperarSenhaForm = ({ onVoltarLogin }) => {
   const [email, setEmail] = useState('');

@@ -1,10 +1,3 @@
-// ============================================================
-// PAGE - Área 3: Planejamento (Cronogramas)
-// Cada cronograma é UMA data. Recorrência diária/semanal cria
-// uma ocorrência por data, agrupadas numa série.
-// Study+
-// ============================================================
-
 import React, { useState, useEffect } from "react";
 import {
   listarCronogramas,
@@ -12,7 +5,7 @@ import {
   atualizarCronograma,
   excluirCronograma,
 } from "../../Controllers/estudoController";
-import "./Planejamento.css";
+import "../../Assets/Styles/Pages/Planejamento.css";
 import { disciplinaService } from "../../Services/disciplinaService";
 import { formatarData, formatarHorario } from "../../Utils/formatters";
 
