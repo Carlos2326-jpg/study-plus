@@ -1,12 +1,57 @@
+@import "../variaveis.css";
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+}
+
 .input-field {
-  border: 1px solid black;
-  border-radius: 15px;
+  width: 100%;
+  height: var(--height-input);
+  border: 1.5px solid var(--purple-light);
+  border-radius: var(--border-radius-input);
+  font-size: var(--font-size-input);
+  font-family: inherit;
+  background-color: var(--branco);
+  color: var(--texto-principal);
+  padding: 0 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
 
-  width: 366px;
-  height: 76px;
+.input-field:focus {
+  outline: none;
+  border-color: var(--purple-dark);
+  box-shadow: 0 0 0 3px rgba(94, 75, 122, 0.15); 
+}
 
-  font-size: 24px;
+.input-field:disabled {
+  background: var(--cinza-100);
+  cursor: not-allowed;
+}
 
-  margin: 30px;
-  padding: 10px;
+/* Estilo do botão Mostrar/Ocultar */
+.input-password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--purple-light);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.input-password-toggle:hover {
+  color: var(--purple-dark);
+}
+
+input[type="password"].input-field,
+input[type="text"].input-field + .input-password-toggle {
+  padding-right: 75px;
 }

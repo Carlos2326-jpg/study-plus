@@ -1,0 +1,388 @@
+@import "../variaveis.css";
+
+.progresso-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/*  HEADER & TABS  */
+/* (Mantenha o CSS do header, tabs e controles que fizemos na aula passada) */
+.progresso-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.progresso-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.logo-icon-small {
+  width: 36px;
+  height: 36px;
+  background: var(--purple-dark);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progresso-title-group h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+}
+.btn-icone-quadrado {
+  width: 40px;
+  height: 40px;
+  background: var(--purple-suave);
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.progresso-tabs {
+  display: flex;
+  background: var(--purple-suave);
+  border-radius: var(--raio-pill);
+  padding: 4px;
+}
+.progresso-tabs button {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--raio-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--purple-dark);
+  cursor: pointer;
+}
+.progresso-tabs button.active {
+  background: var(--purple-dark);
+  color: var(--branco);
+}
+
+.progresso-controles {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+@media (min-width: 834px) {
+  .progresso-controles {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+.controle-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: var(--purple-dark);
+  font-size: 0.95rem;
+}
+.btn-seta {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--purple-dark);
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+.controle-filtros {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.btn-filtro-disciplina {
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.txt-registros {
+  font-size: 0.8rem;
+  color: var(--cinza-400);
+}
+
+/*  4. RESUMO CARDS  */
+.progresso-resumo-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: 1 coluna */
+  gap: 1rem;
+}
+
+@media (min-width: 834px) {
+  .progresso-resumo-grid {
+    grid-template-columns: 1fr 1fr; /* Desktop: 2 colunas */
+  }
+}
+
+.card-resumo-destaque {
+  background: var(--purple-dark);
+  color: var(--branco);
+  border-radius: var(--raio-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-resumo-destaque .lbl {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+.card-resumo-destaque .val-grande {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.card-resumo-destaque .val-pequeno {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-left: 0.5rem;
+}
+
+.card-resumo-branco {
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: var(--sombra-suave);
+}
+
+.card-resumo-branco .lbl {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+}
+.card-resumo-branco .val-grande {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+}
+.card-resumo-branco .val-pequeno {
+  font-size: 0.85rem;
+  color: var(--cinza-400);
+  margin-left: 0.5rem;
+}
+
+/*  5. GRÁFICOS LADO A LADO  */
+.progresso-graficos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 834px) {
+  .progresso-graficos-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Card: Seu Ritmo de Estudo */
+.card-grafico {
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  padding: 1.5rem;
+  box-shadow: var(--sombra-suave);
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.card-header-flex h3 {
+  font-size: 1rem;
+  color: var(--purple-dark);
+  font-weight: 700;
+}
+.card-header-flex .legenda {
+  font-size: 0.75rem;
+  color: var(--cinza-400);
+}
+
+.bar-chart-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 160px;
+  padding-bottom: 1.5rem;
+}
+
+.bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.bar-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  margin-bottom: 0.5rem;
+}
+.bar-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+}
+.bar-fill {
+  width: 16px;
+  border-radius: var(--raio-pill);
+  transition: height 0.3s ease;
+}
+.bar-label {
+  font-size: 0.75rem;
+  color: var(--cinza-400);
+  margin-top: 0.5rem;
+}
+
+/* Card: Tempo por Disciplina */
+.card-disciplinas {
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  padding: 1.5rem;
+  box-shadow: var(--sombra-suave);
+}
+
+.card-disciplinas h3 {
+  font-size: 1rem;
+  color: var(--purple-dark);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.lista-disciplinas {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.disciplina-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.disciplina-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 80px;
+  align-items: center;
+  gap: 0.5rem;
+}
+.disc-nome {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+}
+.disc-bar-bg {
+  height: 6px;
+  background: var(--cinza-100);
+  border-radius: var(--raio-pill);
+  overflow: hidden;
+}
+.disc-bar-fill {
+  height: 100%;
+  border-radius: var(--raio-pill);
+}
+.disc-tempo {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  text-align: right;
+}
+
+.alerta-maior-tempo {
+  background: var(--purple-suave);
+  border-radius: var(--raio);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--purple-dark);
+  font-weight: 500;
+}
+
+/*  6. PAINEL DE RESUMO  */
+.card-painel-resumo {
+  background: var(--purple-suave);
+  border-radius: var(--raio-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.painel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--purple-dark);
+}
+
+.painel-header strong {
+  font-size: 0.95rem;
+}
+.painel-header .seta {
+  font-size: 1.2rem;
+}
+
+.painel-txt {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+}
+
+.painel-progresso-bg {
+  height: 6px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: var(--raio-pill);
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.painel-progresso-fill {
+  height: 100%;
+  background: var(--purple-dark);
+  border-radius: var(--raio-pill);
+}
+
+/*  7. BOTÃO DE RELATÓRIO  */
+.btn-relatorio-detalhado {
+  width: 100%;
+  padding: 1rem;
+  background: var(--purple-dark);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio);
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-bottom: 2rem;
+}
+
+.btn-relatorio-detalhado:hover {
+  opacity: 0.9;
+}

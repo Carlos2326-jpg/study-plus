@@ -1,33 +1,25 @@
-.button {
-  width: 349px;
-  height: 89px;
+@import "../variaveis.css";
 
-  border-radius: 40px;
-
-  background-color: #57d347;
-
-  color: #ffffff;
-
-  font-size: 32px;
-  text-align: center;
-  line-height: 1.1;
-
-  margin-top: 60px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.button:hover {
-  background-color: #44a737;
-
-  color: #bababa;
-
+.btn {
+  width: 100%; 
+  height: var(--height-button);
+  border-radius: var(--border-radius-button);
+  background: var(--purple-dark); 
+  color: var(--branco);
+  font-size: var(--font-size-button);
+  font-weight: var(--text-bold);
+  border: none;
   cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
 }
 
-.btn-img {
-  width: 73px;
-  height: 73px;
+.btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  transform: none;
+  cursor: not-allowed;
 }

@@ -1,0 +1,166 @@
+@import "../variaveis.css";
+
+/*  Layout Base (Desktop/Tablet) */
+.login-page-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--branco);
+}
+
+/* --- Lado Esquerdo (Aside) --- */
+.login-aside {
+  display: none; 
+  flex: 1;
+  background-color: #F7F4FA;
+  padding: 4rem;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.login-aside-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-aside-logo img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.login-aside-logo span {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+}
+
+.login-aside-content {
+  max-width: 480px;
+}
+
+.login-aside-tag {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--purple-main);
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.login-aside-content h1 {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  color: var(--purple-dark);
+  margin-bottom: 1.5rem;
+}
+
+.login-aside-content p {
+  font-size: 1.1rem;
+  color: var(--texto-secundario);
+  line-height: 1.5;
+}
+
+.login-aside-footer p {
+  font-size: 0.9rem;
+  color: var(--cinza-600);
+}
+
+/* Lado Direito (Formulário) */
+.login-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-desktop-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.login-desktop-header h2 {
+  font-size: 2rem;
+  color: var(--purple-dark);
+  font-weight: 700;
+}
+
+.login-desktop-header p {
+  color: var(--texto-secundario);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+/* Esconde o header mobile no Desktop */
+.login-mobile-header {
+  display: none; 
+}
+
+/* Media Queries */
+
+/* Tablets e Notebooks (A partir de 834px) */
+@media (min-width: 834px) {
+  .login-aside {
+    display: flex; /* Mostra a arte lateral */
+  }
+  .login-mobile-header {
+    display: none; 
+  }
+}
+
+/* Mobile (Abaixo de 834px) */
+@media (max-width: 833px) {
+  .login-page-container {
+    flex-direction: column;
+    background-color: #F7F4FA;
+  }
+
+  .login-main {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-form-wrapper {
+    background: var(--branco);
+    padding: 2.5rem 1.5rem;
+    border-radius: var(--raio-lg);
+    box-shadow: var(--sombra-suave);
+  }
+
+  .login-desktop-header {
+    display: none;
+  }
+
+  .login-mobile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .login-mobile-header img {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+  }
+
+  .login-mobile-header h2 {
+    font-size: 1.8rem;
+    color: var(--purple-dark);
+    font-weight: 700;
+  }
+
+  .login-mobile-header p {
+    color: var(--texto-secundario);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+}

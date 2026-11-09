@@ -1,0 +1,73 @@
+@import "../variaveis.css";
+
+.auth-centered-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F7F4FA; /* Lilás clarinho do protótipo */
+  padding: 2rem;
+}
+
+.auth-card {
+  background: var(--branco);
+  width: 100%;
+  max-width: 440px;
+  padding: 3rem 2rem;
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-suave);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.auth-icon-circle {
+  width: 80px;
+  height: 80px;
+  background-color: var(--purple-suave);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+  margin-bottom: 0.75rem;
+}
+
+.auth-subtitle {
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+  line-height: 1.5;
+  margin-bottom: 2rem;
+}
+
+.auth-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* O botão precisa ocupar 100% */
+.btn-auth {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.auth-link {
+  font-size: 0.9rem;
+  color: var(--purple-main);
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}

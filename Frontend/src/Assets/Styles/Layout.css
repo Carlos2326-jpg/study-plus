@@ -1,0 +1,143 @@
+@import "./variaveis.css";
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--cinza-50);
+}
+
+/* ================= SIDEBAR (Desktop) ================= */
+.sidebar {
+  display: none; /* Escondido no Mobile */
+  width: 260px;
+  background: var(--branco);
+  border-right: 1px solid var(--cinza-200);
+  padding: 2rem 1.5rem;
+  flex-direction: column;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+}
+
+.sidebar-logo img {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.sidebar-logo span {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+}
+
+.sidebar-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--texto-secundario);
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio);
+  text-decoration: none;
+  color: var(--texto-secundario);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+  background: var(--cinza-100);
+}
+
+.sidebar-link.active {
+  background: var(--purple-suave);
+  color: var(--purple-dark);
+  font-weight: 600;
+}
+
+.sidebar-footer p {
+  font-size: 0.75rem;
+  color: var(--cinza-400);
+  margin-bottom: 1rem;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--cinza-200);
+  padding: 0.5rem;
+  width: 100%;
+  border-radius: var(--raio);
+  cursor: pointer;
+  color: var(--texto-secundario);
+}
+
+/*  CONTEÚDO  */
+.main-content {
+  flex: 1;
+  padding: 2rem 1.5rem 100px 1.5rem; /* Padding bottom extra no mobile */
+}
+
+/*  BOTTOM NAV (Mobile)  */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: var(--branco);
+  border-top: 1px solid var(--cinza-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.bottom-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  color: var(--cinza-400);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.bottom-link.active {
+  color: var(--purple-dark);
+  font-weight: 700;
+}
+
+.bottom-link .icon {
+  font-size: 1.2rem;
+}
+
+/*  MEDIA QUERIES  */
+@media (min-width: 834px) {
+  .sidebar {
+    display: flex;
+  }
+  .bottom-nav {
+    display: none;
+  }
+  .main-content {
+    padding: 2.5rem 3rem;
+  }
+}

@@ -1,0 +1,28 @@
+.notfound-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: var(--verde-bg);
+  color: var(--texto-principal);
+}
+.notfound-page h1 {
+  font-size: 5rem;
+  color: var(--verde-escuro);
+  font-weight: 800;
+}
+.notfound-page p {
+  color: var(--texto-secundario);
+  font-size: 1.1rem;
+}
+.notfound-link {
+  padding: 0.6rem 1.4rem;
+  background: var(--verde-escuro);
+  color: var(--branco);
+  border-radius: var(--raio);
+  text-decoration: none;
+  font-weight: 600;
+}
+.notfound-link:hover { opacity: 0.9; }
