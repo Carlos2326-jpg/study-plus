@@ -17,7 +17,9 @@ export const ordenarPorPrioridade = (tarefas) => {
 };
 
 export const ordenarPorPrazo = (tarefas) => {
-  return [...tarefas].sort(
-    (a, b) => new Date(a.prazo) - new Date(b.prazo)
-  );
+  return [...tarefas].sort((a, b) => {
+    const da = a.prazo ? new Date(a.prazo).getTime() : Infinity;
+    const db = b.prazo ? new Date(b.prazo).getTime() : Infinity;
+    return da - db;
+  });
 };

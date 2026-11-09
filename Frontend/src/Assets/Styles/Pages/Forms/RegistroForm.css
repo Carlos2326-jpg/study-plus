@@ -1,0 +1,32 @@
+@import "./LoginForm.css"; /* Herda todo o estilo de inputs, botões e links */
+
+.cadastro-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Ajuste específico para o título no mobile */
+@media (max-width: 833px) {
+  .login-form-wrapper {
+    position: relative;
+  }
+  
+  .cadastro-form::before {
+    content: "Crie sua conta";
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--purple-dark);
+    margin-bottom: 0.5rem;
+  }
+  
+  .cadastro-form::after {
+    content: "Comece a organizar suas tarefas e treinar seu foco hoje mesmo.";
+    display: block;
+    font-size: 0.9rem;
+    color: var(--texto-secundario);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+  }
+}

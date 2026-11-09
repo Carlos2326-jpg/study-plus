@@ -1,84 +1,66 @@
-import React, { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Controllers/authController';
-import Button from '../../Components/ui/Button';
-import Input from '../../Components/ui/Input';
-import Header from './Components/layout/Header';
-import './Styles/ResetarSenhaPage.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Controllers/authController";
+import Button from "../../Components/ui/Button";
+import Input from "../../Components/ui/Input";
+import "../../Assets/Styles/Pages/AuthPages.css";
 
 export const ResetarSenhaPage = () => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [novaSenha, setNovaSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
   const { handleResetPassword, erro, loading } = useAuth();
-
-  const [novaSenha, setNovaSenha] = useState('');
-  const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [sucesso, setSucesso] = useState(false);
-
-  // Extrai automaticamente o parâmetro '?token=...' vindo do e-mail
-    const token = searchParams.get('token') || localStorage.getItem('@App:reset_token');
+  const navigate = useNavigate();
+  const token = localStorage.getItem("@App:reset_token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!token) {
-      alert('Token de recuperação inválido ou ausente.');
-      return;
+      alert("Sessão expirada. Tente novamente.");
+      return navigate("/forgot-password");
     }
-
-    const foiRedefinida = await handleResetPassword(token, novaSenha, confirmarSenha);
-    if (foiRedefinida) {
-      localStorage.removeItem('@App:reset_token');
-      localStorage.removeItem('@App:reset_email');
-      setSucesso(true);
-      setTimeout(() => {
-        navigate('/login'); // Redireciona de volta após 3 segundos
-      }, 3000);
+    const sucesso = await handleResetPassword(token, novaSenha, confirmarSenha);
+    if (sucesso) {
+      localStorage.removeItem("@App:reset_token");
+      localStorage.removeItem("@App:reset_email");
+      alert("Senha alterada com sucesso!");
+      navigate("/login");
     }
   };
 
   return (
-    <div className="login-container">
-      <Header titulo="Redefinir Senha" />
-      <div className="card-login" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
+    <div className="auth-centered-container">
+      <div className="auth-card">
+        <h1 className="auth-title">Crie sua nova senha</h1>
+        <p className="auth-subtitle">Sua nova senha deve ter no mínimo 8 caracteres.</p>
 
-        {sucesso ? (
-          <div style={{ textAlign: 'center' }}>
-            <h3 style={{ color: 'green' }}>Senha alterada com sucesso!</h3>
-            <p>Você será redirecionado para a página de login...</p>
+        {erro && <div className="error-message">{erro}</div>}
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label>Nova Senha</label>
+            <Input
+              type="password"
+              placeholder="Mínimo 8 caracteres"
+              value={novaSenha}
+              onChange={(e) => setNovaSenha(e.target.value)}
+              disabled={loading}
+            />
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="login-form">
-            <h2>Crie sua nova senha</h2>
+          <div className="form-group">
+            <label>Confirmar Nova Senha</label>
+            <Input
+              type="password"
+              placeholder="Repita a senha"
+              value={confirmarSenha}
+              onChange={(e) => setConfirmarSenha(e.target.value)}
+              disabled={loading}
+            />
+          </div>
 
-            {erro && <div className="error-message">{erro}</div>}
-            {!token && <div className="error-message">Aviso: Nenhum token de validação foi encontrado na URL.</div>}
-
-            <article className="form-group">
-              <Input
-                type="password"
-                name="novaSenha"
-                placeholder="Nova Senha"
-                value={novaSenha}
-                onChange={(e) => setNovaSenha(e.target.value)}
-              />
-            </article>
-
-            <article className="form-group">
-              <Input
-                type="password"
-                name="confirmarSenha"
-                placeholder="Confirme a Nova Senha"
-                value={confirmarSenha}
-                onChange={(e) => setConfirmarSenha(e.target.value)}
-              />
-            </article>
-
-            <Button type="submit" disabled={loading || !token}>
-            {loading ? 'Salvando...' : 'Salvar Senha'}
-            </Button>
-          </form>
-        )}
+          <Button type="submit" disabled={loading} className="btn-auth">
+            {loading ? "Salvando..." : "Confirmar"}
+          </Button>
+        </form>
       </div>
     </div>
   );

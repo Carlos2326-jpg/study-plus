@@ -1,0 +1,27 @@
+@import "./Login.css"; /* Reaproveita todo o layout de duas colunas */
+
+/* Título exclusivo do desktop */
+.cadastro-header-desktop {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.cadastro-header-desktop h2 {
+  font-size: 2rem;
+  color: var(--purple-dark);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.cadastro-header-desktop p {
+  color: var(--texto-secundario);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* No mobile, escondemos o header desktop e usamos o header mobile do Login */
+@media (max-width: 833px) {
+  .cadastro-header-desktop {
+    display: none;
+  }
+}

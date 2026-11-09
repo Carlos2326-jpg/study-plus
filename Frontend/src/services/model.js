@@ -1,8 +1,3 @@
-// ============================================================
-// MODEL - Área 2: Tarefas, Subtarefas, Recorrência e Calendário
-// Study+
-// ============================================================
-
 // Mock de usuário logado (virá da Área 1 futuramente)
 export const usuarioAtual = {
   id: 1,

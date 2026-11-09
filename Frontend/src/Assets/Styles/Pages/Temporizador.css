@@ -1,0 +1,227 @@
+@import "../variaveis.css";
+
+.timer-page {
+  background-color: var(--purple-bg); /* Fundo levemente roxo */
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ajuste para quando a Sidebar estiver ativa */
+@media (min-width: 834px) {
+  .timer-page {
+    margin-left: 250px; /* Empurra o conteúdo para o lado da sidebar */
+    padding: 4rem;
+    background-color: var(--branco);
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.timer-header {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.timer-header h1 {
+  font-size: 1.8rem;
+  color: var(--purple-dark);
+  font-weight: 700;
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--cor-media-bg);
+  color: var(--cor-media-texto);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Painel central (vira um card no Desktop) */
+.timer-panel {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 834px) {
+  .timer-panel {
+    background: var(--branco);
+    padding: 3rem;
+    border-radius: var(--raio-lg);
+    box-shadow: var(--sombra-suave);
+    border: 1px solid var(--cinza-100);
+  }
+}
+
+/* Abas */
+.timer-tabs {
+  display: flex;
+  width: 100%;
+  background-color: var(--branco);
+  border-radius: var(--raio-pill);
+  padding: 0.25rem;
+  border: 1px solid var(--cinza-200);
+  margin-bottom: 3rem;
+}
+
+.timer-tabs button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--raio-pill);
+  font-weight: 600;
+  color: var(--texto-secundario);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.timer-tabs button.active {
+  background-color: var(--purple-dark);
+  color: var(--branco);
+}
+
+/* Círculo */
+.timer-circle-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.timer-svg {
+  transform: rotate(-90deg); /* Faz o círculo começar do topo */
+}
+
+.timer-bg {
+  stroke: var(--cinza-100);
+}
+
+.timer-progress {
+  stroke: var(--purple-light);
+  transition: stroke-dashoffset 1s linear;
+}
+
+.timer-text {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-text h2 {
+  font-size: 4.5rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+  line-height: 1;
+}
+
+.timer-text span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--purple-main);
+  letter-spacing: 1px;
+  margin-top: 0.5rem;
+}
+
+/* Tarefa Atual */
+.timer-task {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  padding: 1rem 1.25rem;
+  border-radius: var(--raio);
+  margin-bottom: 2rem;
+}
+
+.task-icon {
+  background: var(--purple-suave);
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.task-info {
+  flex: 1;
+}
+
+.task-info h3 {
+  font-size: 0.95rem;
+  color: var(--texto-principal);
+  font-weight: 600;
+}
+
+.task-info p {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+}
+
+.btn-edit-task {
+  background: none;
+  border: none;
+  color: var(--cinza-400);
+  cursor: pointer;
+}
+
+/* Frase */
+.timer-quote {
+  font-style: italic;
+  color: var(--texto-secundario);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+/* Botões de Controle */
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.btn-control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-control.secondary {
+  width: 48px;
+  height: 48px;
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  color: var(--purple-main);
+}
+
+.btn-control.primary {
+  width: 72px;
+  height: 72px;
+  background: var(--purple-dark);
+  border: none;
+  color: var(--branco);
+  box-shadow: 0 8px 16px rgba(61, 44, 94, 0.2);
+}
+
+.btn-control:hover {
+  transform: scale(1.05);
+}

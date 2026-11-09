@@ -26,9 +26,9 @@ export const STATUS_LABEL = {
 };
 
 export const PRIORIDADE_COR = {
-  baixa: "#22c55e",
-  media: "#f59e0b",
-  alta: "#ef4444",
+  baixa: "var(--prioridade-baixa)",
+  media: "var(--prioridade-media)",
+  alta: "var(--prioridade-alta)",
 };
 
 export const TECNICA_TEMPO = {

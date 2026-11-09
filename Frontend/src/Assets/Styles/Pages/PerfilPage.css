@@ -1,0 +1,213 @@
+@import "../variaveis.css";
+
+.perfil-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.perfil-page-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+  margin-bottom: 2rem;
+}
+
+/* ================= LAYOUT GRID ================= */
+.perfil-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: 1 coluna */
+  gap: 2rem;
+}
+
+/* ================= COLUNA ESQUERDA ================= */
+.perfil-col-esquerda {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.perfil-card-usuario {
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--sombra-suave);
+}
+
+.avatar-wrapper {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--purple-light), var(--purple-dark));
+  margin-bottom: 1rem;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--branco);
+}
+
+.perfil-card-usuario h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--texto-principal);
+  margin-bottom: 0.25rem;
+}
+
+.perfil-card-usuario p {
+  color: var(--texto-secundario);
+  font-size: 0.9rem;
+}
+
+/* Stats Rápidas */
+.perfil-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.stat-card {
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: var(--sombra-suave);
+}
+
+.stat-valor {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.stat-valor.roxo {
+  color: var(--purple-dark);
+}
+.stat-valor.laranja {
+  color: var(--cor-media-texto);
+}
+.stat-valor.vermelho {
+  color: var(--grafico-vermelho-claro);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+}
+
+/* ================= COLUNA DIREITA ================= */
+.perfil-col-direita {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.perfil-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.secao-titulo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cinza-400);
+  letter-spacing: 0.5px;
+  margin-left: 0.25rem;
+}
+
+.secao-lista {
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--sombra-suave);
+}
+
+.opcao-item {
+  background: transparent;
+  border: none;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.opcao-item:hover {
+  background: var(--cinza-50);
+}
+
+.opcao-item.com-borda {
+  border-bottom: 1px solid var(--cinza-100);
+}
+
+.opcao-esquerda {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.opcao-icone {
+  font-size: 1.1rem;
+  color: var(--purple-main);
+  opacity: 0.8;
+}
+
+.opcao-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--texto-principal);
+}
+
+.opcao-seta {
+  color: var(--cinza-400);
+  font-size: 1.2rem;
+}
+
+/* Botão de Logout */
+.btn-logout-perfil {
+  background: transparent;
+  border: 1px solid var(--cor-erro);
+  color: var(--cor-erro);
+  border-radius: var(--raio);
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.btn-logout-perfil:hover {
+  background: var(--cor-erro-bg);
+}
+
+/* ================= DESKTOP ================= */
+@media (min-width: 834px) {
+  .perfil-layout-grid {
+    /* Duas colunas: Esquerda (cartão) ocupa 1/3, Direita (opções) ocupa 2/3 */
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+  }
+
+  /* Esconde o título no mobile para ficar igual ao protótipo */
+  .desktop-only {
+    display: block;
+  }
+}

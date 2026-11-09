@@ -1,0 +1,25 @@
+@import "../variaveis.css";
+
+.btn {
+  width: 100%; 
+  height: var(--height-button);
+  border-radius: var(--border-radius-button);
+  background: var(--purple-dark); 
+  color: var(--branco);
+  font-size: var(--font-size-button);
+  font-weight: var(--text-bold);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  transform: none;
+  cursor: not-allowed;
+}

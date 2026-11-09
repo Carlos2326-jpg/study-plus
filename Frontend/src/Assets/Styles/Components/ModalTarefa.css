@@ -1,0 +1,349 @@
+@import "../variaveis.css";
+
+/* Reaproveita o overlay do modal de disciplinas */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end; /* Mobile: cola no fundo */
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-tarefa-content {
+  background: var(--branco);
+  width: 100%;
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 95vh;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+}
+
+.btn-fechar {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--purple-light);
+  cursor: pointer;
+}
+
+/* Corpo com Scroll (para telas menores) */
+.modal-body-scroll {
+  padding: 1rem 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Inputs Genéricos */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--purple-dark);
+}
+
+.input-modal {
+  width: 100%;
+  height: 48px;
+  border: 1.5px solid var(--purple-main);
+  border-radius: var(--raio);
+  padding: 0 1rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--texto-principal);
+  background: var(--branco);
+}
+
+.input-modal:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(94, 75, 122, 0.15);
+}
+
+.input-modal.textarea {
+  height: auto;
+  padding: 0.75rem 1rem;
+  resize: vertical;
+}
+
+/* Linha do Título com Botão Nova Disciplina */
+.form-row-titulo {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.btn-nova-disciplina {
+  background: var(--purple-dark);
+  color: var(--branco);
+  border: none;
+  height: 48px;
+  padding: 0 1rem;
+  border-radius: var(--raio);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn-nova-disciplina span {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+/* Data e Hora (Grid 2 colunas) */
+.form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Inputs com Ícone */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon .icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--cinza-400);
+  font-size: 1.1rem;
+}
+
+.input-with-icon .input-modal {
+  padding-left: 2.5rem;
+}
+
+/* Prioridade Botões */
+.prioridade-botoes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-prioridade {
+  flex: 1;
+  height: 40px;
+  border-radius: var(--raio);
+  border: 1.5px solid transparent;
+  background: var(--cinza-100);
+  color: var(--texto-secundario);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+}
+
+.btn-prioridade .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--texto-secundario);
+}
+
+/* Estados Ativos das Prioridades */
+.btn-prioridade.active.baixa {
+  border-color: var(--purple-dark);
+  color: var(--purple-dark);
+  background: var(--branco);
+}
+.btn-prioridade.active.baixa .dot {
+  background: var(--purple-dark);
+}
+
+.btn-prioridade.active.media {
+  border-color: var(--cor-media-texto);
+  color: var(--cor-media-texto);
+  background: #fffaf0;
+}
+.btn-prioridade.active.media .dot {
+  background: var(--cor-media-texto);
+}
+
+.btn-prioridade.active.alta {
+  border-color: var(--cor-alta-texto);
+  color: var(--cor-alta-texto);
+  background: #fff5f5;
+}
+.btn-prioridade.active.alta .dot {
+  background: var(--cor-alta-texto);
+}
+
+/* Subtarefas */
+.subtarefa-add-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-add-sub {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--raio);
+  background: var(--purple-dark);
+  color: var(--branco);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subtarefas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: var(--cinza-50);
+  border-radius: var(--raio);
+}
+
+.subtarefa-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--texto-principal);
+  padding: 0.25rem 0.5rem;
+}
+
+.subtarefa-item button {
+  background: transparent;
+  border: none;
+  color: var(--cor-erro);
+  cursor: pointer;
+}
+
+/* Rodapé (Botões) */
+.modal-footer-tarefa {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--cinza-100);
+}
+
+.btn-salvar-tarefa {
+  width: 100%;
+  height: 52px;
+  background: var(--purple-dark);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-cancelar-tarefa {
+  width: 100%;
+  height: 48px;
+  background: transparent;
+  color: var(--purple-dark);
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/*  SELECT DE CATEGORIA  */
+.select-categoria {
+  appearance: none; /* Remove a seta padrão do navegador */
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.icon-chevron {
+  position: absolute;
+  right: 1rem;
+  color: var(--purple-main);
+  font-size: 0.8rem;
+  pointer-events: none; /* Permite clicar no select através do ícone */
+}
+
+/* ================= DESKTOP ================= */
+@media (min-width: 834px) {
+  .modal-overlay {
+    align-items: center;
+  }
+
+  .modal-tarefa-content {
+    max-width: 600px;
+    border-radius: 24px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .modal-drag-handle {
+    display: none;
+  }
+
+  .modal-footer-tarefa {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: none;
+    padding-top: 1rem;
+  }
+
+  .btn-salvar-tarefa {
+    width: auto;
+    padding: 0 2rem;
+    order: 2; /* Joga o salvar pra direita */
+  }
+
+  .btn-cancelar-tarefa {
+    width: auto;
+    padding: 0 1.5rem;
+    order: 1;
+  }
+}

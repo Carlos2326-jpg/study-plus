@@ -1,65 +1,64 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from './Components/layout/Header';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Controllers/authController";
+import Button from "../../Components/ui/Button";
+import Input from "../../Components/ui/Input";
+import "../../Assets/Styles/Pages/AuthPages.css";
 
-// Importação dos 3 sub-formulários do funil
-import { RecuperarSenhaForm } from './Components/Forms/RecuperarSenhaForm';
-import { ValidarCodigoForm } from './Components/Forms/ValidarCodigoForm';
-import { DefinirNovaSenhaForm } from './Components/Forms/DefinirNovaSenhaForm';
-
-import styles from '../Auth/Styles/Login.css'; // Reaproveita o estilo do card de login
-
+// Exportação nomeada (com const) - garanta que o import no routes bata com isso
 export const RecuperarSenhaPage = () => {
+  const [email, setEmail] = useState("");
+  const { handleForgotPassword, erro, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Estados de controle do fluxo
-  const [etapa, setEtapa] = useState(1);
-  const [emailInformado, setEmailInformado] = useState('');
-  const [tokenValidado, setTokenValidado] = useState('');
-
-  // Passo 1 finalizado: Guarda o e-mail e vai para a verificação do código
-  const avancarParaCodigo = (email) => {
-    setEmailInformado(email);
-    setEtapa(2);
-  };
-
-  // Passo 2 finalizado: Guarda o token de autorização da API e vai para a nova senha
-  const avancarParaNovaSenha = (token) => {
-    setTokenValidado(token);
-    setEtapa(3);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const resultado = await handleForgotPassword(email);
+    if (resultado.sucesso) {
+      localStorage.setItem("@App:reset_email", email);
+      navigate("/validate-code");
+    }
   };
 
   return (
-    <div className={styles.containerLogin}>
-      <Header titulo="Recuperação de Conta" />
+    <div className="auth-centered-container">
+      <div className="auth-card">
+        
+        {/* Ícone do Envelope (simulando o protótipo) */}
+        <div className="auth-icon-circle">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--purple-dark)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+        </div>
 
-      <div className={styles.cardLogin} style={{ maxWidth: '420px', margin: '40px auto' }}>
+        <h1 className="auth-title">Verifique seu e-mail</h1>
+        <p className="auth-subtitle">
+          Para continuar com a alteração da sua senha, informe o e-mail cadastrado em sua conta. Assim, poderemos prosseguir com o processo de recuperação.
+        </p>
 
-        {etapa === 1 && (
-          <RecuperarSenhaForm
-            onEmailEnviado={avancarParaCodigo}
-            onVoltarLogin={() => navigate('/login')}
-          />
-        )}
+        {erro && <div className="error-message">{erro}</div>}
 
-        {etapa === 2 && (
-          <ValidarCodigoForm
-            email={emailInformado}
-            onCodigoValido={avancarParaNovaSenha}
-            onVoltar={() => setEtapa(1)}
-          />
-        )}
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label>E-mail</label>
+            <Input
+              type="email"
+              placeholder="seu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+            />
+          </div>
 
-        {etapa === 3 && (
-          <DefinirNovaSenhaForm
-            tokenTemporario={tokenValidado}
-            onSucesso={() => {
-              alert('Senha alterada com sucesso! Faça login com a nova senha.');
-              navigate('/login');
-            }}
-          />
-        )}
-
+          <Button type="submit" disabled={loading} className="btn-auth">
+            {loading ? "Enviando..." : "Enviar Código"}
+          </Button>
+          
+          <span className="auth-link" onClick={() => navigate("/login")}>
+            Voltar ao login
+          </span>
+        </form>
       </div>
     </div>
   );

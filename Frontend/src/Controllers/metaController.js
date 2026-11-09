@@ -1,8 +1,3 @@
-// ============================================================
-// CONTROLLER - Área 3: Metas
-// Study+
-// ============================================================
-
 import { metaService } from "../Services/metaService";
 
 function validarMeta(dados) {
