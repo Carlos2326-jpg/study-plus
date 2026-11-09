@@ -3,41 +3,109 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
+// Paleta Focusly (Roxo)
 const COR = {
-  primaria: "#6366f1",
-  texto: "#1e293b",
-  suave: "#64748b",
-  borda: "#e2e8f0",
-  fundo: "#f1f5f9",
-  verde: "#22c55e",
+  primaria: "#3D2C5E", // Roxo Escuro
+  texto: "#111827",
+  suave: "#6B7280",
+  borda: "#E5E7EB",
+  fundo: "#F8F6FC",
+  destaque: "#8A6FB5",
   ambar: "#f59e0b",
 };
 
 const e = StyleSheet.create({
-  pagina: { padding: 36, paddingBottom: 48, fontSize: 10, color: COR.texto, fontFamily: "Helvetica" },
-  topo: { borderBottomWidth: 2, borderBottomColor: COR.primaria, paddingBottom: 8, marginBottom: 14 },
+  pagina: {
+    padding: 36,
+    paddingBottom: 48,
+    fontSize: 10,
+    color: COR.texto,
+    fontFamily: "Helvetica",
+  },
+  topo: {
+    borderBottomWidth: 2,
+    borderBottomColor: COR.primaria,
+    paddingBottom: 8,
+    marginBottom: 14,
+  },
   titulo: { fontSize: 20, fontFamily: "Helvetica-Bold", color: COR.primaria },
   sub: { fontSize: 10, color: COR.suave, marginTop: 3 },
-  secao: { fontSize: 13, fontFamily: "Helvetica-Bold", marginTop: 16, marginBottom: 6 },
+  secao: {
+    fontSize: 13,
+    fontFamily: "Helvetica-Bold",
+    marginTop: 16,
+    marginBottom: 6,
+  },
   cards: { flexDirection: "row", marginHorizontal: -4 },
-  card: { flex: 1, backgroundColor: COR.fundo, borderRadius: 4, padding: 8, marginHorizontal: 4 },
-  cardValor: { fontSize: 15, fontFamily: "Helvetica-Bold" },
+  card: {
+    flex: 1,
+    backgroundColor: COR.fundo,
+    borderRadius: 4,
+    padding: 8,
+    marginHorizontal: 4,
+  },
+  cardValor: {
+    fontSize: 15,
+    fontFamily: "Helvetica-Bold",
+    color: COR.primaria,
+  },
   cardLabel: { fontSize: 8, color: COR.suave, marginTop: 2 },
   linhaBarra: { marginBottom: 6 },
-  linhaBarraTopo: { flexDirection: "row", justifyContent: "space-between", marginBottom: 2 },
+  linhaBarraTopo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 2,
+  },
   trilho: { height: 7, backgroundColor: COR.borda, borderRadius: 3 },
   fill: { height: 7, borderRadius: 3 },
-  graf: { flexDirection: "row", alignItems: "flex-end", height: 90, borderBottomWidth: 1, borderBottomColor: COR.borda },
+  graf: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    height: 90,
+    borderBottomWidth: 1,
+    borderBottomColor: COR.borda,
+  },
   grafBarra: { flex: 1, marginHorizontal: 1, backgroundColor: COR.primaria },
-  grafEixo: { flexDirection: "row", justifyContent: "space-between", marginTop: 3 },
+  grafEixo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 3,
+  },
   eixoTxt: { fontSize: 8, color: COR.suave },
-  th: { flexDirection: "row", backgroundColor: COR.fundo, paddingVertical: 4, paddingHorizontal: 4 },
-  tr: { flexDirection: "row", paddingVertical: 4, paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: COR.borda },
+  th: {
+    flexDirection: "row",
+    backgroundColor: COR.fundo,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+  },
+  tr: {
+    flexDirection: "row",
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: COR.borda,
+  },
   thTxt: { fontFamily: "Helvetica-Bold", fontSize: 9 },
   chips: { flexDirection: "row", flexWrap: "wrap" },
-  chip: { backgroundColor: COR.fundo, borderRadius: 10, paddingVertical: 3, paddingHorizontal: 8, marginRight: 6, marginBottom: 6 },
+  chip: {
+    backgroundColor: COR.fundo,
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    marginRight: 6,
+    marginBottom: 6,
+  },
   vazio: { color: COR.suave, fontSize: 10, marginTop: 4 },
-  rodape: { position: "absolute", bottom: 20, left: 36, right: 36, flexDirection: "row", justifyContent: "space-between", fontSize: 8, color: COR.suave },
+  rodape: {
+    position: "absolute",
+    bottom: 20,
+    left: 36,
+    right: 36,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    fontSize: 8,
+    color: COR.suave,
+  },
 });
 
 const ESTADO_LABEL = {
@@ -49,9 +117,9 @@ const ESTADO_LABEL = {
 
 const diaBR = (d) => (d ? d.split("-").reverse().join("/") : "");
 
-// Mais de 31 dias: agrupa em semanas para o gráfico caber na página
 function prepararEvolucao(evolucao = []) {
-  if (evolucao.length <= 31) return evolucao.map((p) => ({ rotulo: p.data, horas: p.horas }));
+  if (evolucao.length <= 31)
+    return evolucao.map((p) => ({ rotulo: p.data, horas: p.horas }));
   const grupos = [];
   for (let i = 0; i < evolucao.length; i += 7) {
     const bloco = evolucao.slice(i, i + 7);
@@ -73,34 +141,46 @@ function BarraHoras({ nome, horas, percentual, cor }) {
         </Text>
       </View>
       <View style={e.trilho}>
-        <View style={[e.fill, { width: `${Math.min(100, percentual)}%`, backgroundColor: cor }]} />
+        <View
+          style={[
+            e.fill,
+            { width: `${Math.min(100, percentual)}%`, backgroundColor: cor },
+          ]}
+        />
       </View>
     </View>
   );
 }
 
-export default function RelatorioPDF({ produtividade, graficos, periodoTexto, disciplinaTexto }) {
+export default function RelatorioPDF({
+  produtividade,
+  graficos,
+  periodoTexto,
+  disciplinaTexto,
+}) {
   const geradoEm = new Date().toLocaleString("pt-BR");
   const semDados = produtividade?.semDados;
   const evolucao = prepararEvolucao(graficos?.evolucao);
   const maxHoras = Math.max(0.01, ...evolucao.map((p) => p.horas));
   const semanal = (graficos?.evolucao?.length || 0) > 31;
   const sessoes = (produtividade?.sessoes || []).slice(0, 30);
-  const cores = [COR.primaria, COR.ambar, COR.verde, "#ef4444", "#06b6d4"];
+  const cores = [COR.primaria, COR.ambar, COR.destaque, "#ef4444", "#06b6d4"];
 
   return (
-    <Document title="Relatório de Progresso - Study+" author="Study+">
+    <Document title="Relatório de Progresso - Focusly" author="Focusly">
       <Page size="A4" style={e.pagina}>
         <View style={e.topo}>
-          <Text style={e.titulo}>Study+ - Relatório de Progresso</Text>
+          <Text style={e.titulo}>Focusly - Relatório de Progresso</Text>
           <Text style={e.sub}>
-            Período: {periodoTexto} | Disciplina: {disciplinaTexto} | Gerado em {geradoEm}
+            Período: {periodoTexto} | Disciplina: {disciplinaTexto} | Gerado em{" "}
+            {geradoEm}
           </Text>
         </View>
 
         {semDados ? (
           <Text style={e.vazio}>
-            {produtividade?.mensagem || "Não há dados de estudo para o período selecionado."}
+            {produtividade?.mensagem ||
+              "Não há dados de estudo para o período selecionado."}
           </Text>
         ) : (
           <>
@@ -115,7 +195,9 @@ export default function RelatorioPDF({ produtividade, graficos, periodoTexto, di
                 <Text style={e.cardLabel}>Sessões realizadas</Text>
               </View>
               <View style={e.card}>
-                <Text style={e.cardValor}>{produtividade.disciplinaMaisEstudada || "-"}</Text>
+                <Text style={e.cardValor}>
+                  {produtividade.disciplinaMaisEstudada || "-"}
+                </Text>
                 <Text style={e.cardLabel}>Disciplina mais estudada</Text>
               </View>
               <View style={e.card}>
@@ -146,20 +228,28 @@ export default function RelatorioPDF({ produtividade, graficos, periodoTexto, di
             {evolucao.length > 0 && (
               <View wrap={false}>
                 <Text style={e.secao}>
-                  Evolução do tempo de estudo {semanal ? "(horas por semana)" : "(horas por dia)"}
+                  Evolução do tempo de estudo{" "}
+                  {semanal ? "(horas por semana)" : "(horas por dia)"}
                 </Text>
                 <View style={e.graf}>
                   {evolucao.map((p) => (
                     <View
                       key={p.rotulo}
-                      style={[e.grafBarra, { height: `${Math.max(1, (p.horas / maxHoras) * 100)}%` }]}
+                      style={[
+                        e.grafBarra,
+                        {
+                          height: `${Math.max(1, (p.horas / maxHoras) * 100)}%`,
+                        },
+                      ]}
                     />
                   ))}
                 </View>
                 <View style={e.grafEixo}>
                   <Text style={e.eixoTxt}>{diaBR(evolucao[0].rotulo)}</Text>
                   <Text style={e.eixoTxt}>Máximo: {maxHoras}h</Text>
-                  <Text style={e.eixoTxt}>{diaBR(evolucao[evolucao.length - 1].rotulo)}</Text>
+                  <Text style={e.eixoTxt}>
+                    {diaBR(evolucao[evolucao.length - 1].rotulo)}
+                  </Text>
                 </View>
               </View>
             )}
@@ -180,13 +270,16 @@ export default function RelatorioPDF({ produtividade, graficos, periodoTexto, di
                 </Text>
                 <Text style={{ width: "30%" }}>{s.disciplina}</Text>
                 <Text style={{ width: "20%" }}>{s.tecnica_usada || "-"}</Text>
-                <Text style={{ width: "12%" }}>{s.duracao_minutos ?? 0} min</Text>
+                <Text style={{ width: "12%" }}>
+                  {s.duracao_minutos ?? 0} min
+                </Text>
                 <Text style={{ width: "10%" }}>{s.pausas ?? 0}</Text>
               </View>
             ))}
             {produtividade.sessoes.length > sessoes.length && (
               <Text style={e.vazio}>
-                Mostrando as {sessoes.length} sessões mais recentes de {produtividade.sessoes.length}.
+                Mostrando as {sessoes.length} sessões mais recentes de{" "}
+                {produtividade.sessoes.length}.
               </Text>
             )}
           </>
@@ -213,7 +306,11 @@ export default function RelatorioPDF({ produtividade, graficos, periodoTexto, di
           <View>
             <Text style={e.secao}>Metas - progresso atual</Text>
             {graficos.progresso.map((m, i) => (
-              <View key={`${m.disciplina}-${i}`} style={e.linhaBarra} wrap={false}>
+              <View
+                key={`${m.disciplina}-${i}`}
+                style={e.linhaBarra}
+                wrap={false}
+              >
                 <View style={e.linhaBarraTopo}>
                   <Text>{m.disciplina}</Text>
                   <Text>
@@ -226,7 +323,12 @@ export default function RelatorioPDF({ produtividade, graficos, periodoTexto, di
                       e.fill,
                       {
                         width: `${Math.min(100, m.percentual)}%`,
-                        backgroundColor: m.percentual >= 100 ? COR.verde : m.percentual >= 50 ? COR.ambar : COR.primaria,
+                        backgroundColor:
+                          m.percentual >= 100
+                            ? "#16a34a"
+                            : m.percentual >= 50
+                              ? COR.ambar
+                              : COR.primaria,
                       },
                     ]}
                   />
@@ -237,8 +339,12 @@ export default function RelatorioPDF({ produtividade, graficos, periodoTexto, di
         )}
 
         <View style={e.rodape} fixed>
-          <Text>Study+</Text>
-          <Text render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages}`} />
+          <Text>Focusly</Text>
+          <Text
+            render={({ pageNumber, totalPages }) =>
+              `Página ${pageNumber} de ${totalPages}`
+            }
+          />
         </View>
       </Page>
     </Document>

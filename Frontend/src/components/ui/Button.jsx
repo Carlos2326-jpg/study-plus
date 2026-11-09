@@ -1,25 +1,24 @@
-// src/Components/Button.jsx
-import React from 'react';
-import '../../Assets/Styles/Components/button.css';
+import React from "react";
+import "../../Assets/Styles/Components/Button.css";
 
-function Button({
-  type = 'button',
+export default function Button({
+  type = "button",
   text,
   children,
   onClick,
-  className = 'button',
+  className = "",
   disabled = false,
+  ...rest
 }) {
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`btn ${className}`}
+      className={`btn ${className}`.trim()}
       disabled={disabled}
+      {...rest}
     >
       <span>{text ?? children}</span>
     </button>
   );
 }
-
-export default Button;
