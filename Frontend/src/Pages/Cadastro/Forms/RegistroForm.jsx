@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../Controllers/authController";
+import Button from "../../../Components/ui/Button";
+import Input from "../../../Components/ui/Input";
 import "../../../Assets/Styles/Pages/Forms/RegistroForm.css";
 
-export const RegistroForm = ({ onVoltarLogin }) => {
+export const RegistroForm = () => {
+  const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -13,7 +17,7 @@ export const RegistroForm = ({ onVoltarLogin }) => {
     e.preventDefault();
     const sucesso = await handleRegister(nome, email, senha, confirmarSenha);
     if (sucesso) {
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     }
   };
 
@@ -22,52 +26,57 @@ export const RegistroForm = ({ onVoltarLogin }) => {
       {erro && <div className="error-message">{erro}</div>}
 
       <div className="form-group">
-        <input
+        <label>Nome completo</label>
+        <Input
           type="text"
-          placeholder="Seu nome completo"
+          placeholder="Ex: Michelle Oliveira"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
-          className="input-field"
+          disabled={loading}
         />
       </div>
 
       <div className="form-group">
-        <input
+        <label>E-mail</label>
+        <Input
           type="email"
           placeholder="seu@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="input-field"
+          disabled={loading}
         />
       </div>
 
       <div className="form-group">
-        <input
+        <label>Senha</label>
+        <Input
           type="password"
-          placeholder="Sua senha"
+          placeholder="Mínimo 8 caracteres"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
-          className="input-field"
+          disabled={loading}
         />
       </div>
 
       <div className="form-group">
-        <input
+        <label>Confirmar Senha</label>
+        <Input
           type="password"
-          placeholder="Confirme sua senha"
+          placeholder="Repita a senha"
           value={confirmarSenha}
           onChange={(e) => setConfirmarSenha(e.target.value)}
-          className="input-field"
+          disabled={loading}
         />
       </div>
 
-      <button type="submit" disabled={loading} className="btn-login">
-        {loading ? "Cadastrando..." : "Criar conta"}
-      </button>
+      <Button type="submit" disabled={loading} className="btn-entrar">
+        {loading ? "Cadastrando..." : "Criar Conta"}
+      </Button>
 
-      <div className="form-actions">
-        <span onClick={onVoltarLogin}>Já tem uma conta? Acesse aqui</span>
-      </div>
+      <p className="link-cadastro">
+        Já tem conta?{" "}
+        <span onClick={() => navigate("/login")}>Entrar</span>
+      </p>
     </form>
   );
 };

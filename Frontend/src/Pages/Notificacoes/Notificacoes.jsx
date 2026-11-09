@@ -1,96 +1,92 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { notificacaoService } from "../../Services/notificacaoService";
+import React, { useState } from "react";
 import "../../Assets/Styles/Pages/Notificacoes.css";
 
-const ICONES = {
-  tarefa_atrasada: "⏰",
-  tarefa_prazo: "📌",
-  meta_prazo: "🎯",
-  meta_nao_atingida: "⚠️",
-};
-
-const ROTULO_NIVEL = { alta: "Urgente", media: "Atenção", baixa: "Em breve" };
-
 export default function Notificacoes() {
-  const navigate = useNavigate();
-  const [dados, setDados] = useState({ total: 0, notificacoes: [], mensagem: null });
-  const [carregando, setCarregando] = useState(true);
-  const [enviando, setEnviando] = useState(false);
-  const [aviso, setAviso] = useState("");
-  const [erro, setErro] = useState("");
+  // Mock de notificações para visualização (depois você integra com a API)
+  const [notificacoes, setNotificacoes] = useState([
+    {
+      id: 1,
+      titulo: "Tarefa atrasada",
+      mensagem: 'A tarefa "Revisar protótipo Focusly" está atrasada há 2 dias.',
+      tempo: "Há 2 horas",
+      lida: false,
+      tipo: "alerta", // alerta, info, sucesso
+    },
+    {
+      id: 2,
+      titulo: "Meta quase atingida",
+      mensagem: "Você está a apenas 2 horas de bater sua meta semanal de Matemática.",
+      tempo: "Há 5 horas",
+      lida: false,
+      tipo: "info",
+    },
+    {
+      id: 3,
+      titulo: "Sessão concluída",
+      mensagem: "Você focou por 45 minutos na disciplina de Física. Bom trabalho!",
+      tempo: "Ontem",
+      lida: true,
+      tipo: "sucesso",
+    },
+  ]);
 
-  async function carregar() {
-    setErro("");
-    try {
-      setDados(await notificacaoService.listar());
-    } catch {
-      setErro("Não foi possível carregar as notificações.");
-    } finally {
-      setCarregando(false);
-    }
-  }
+  const marcarComoLida = (id) => {
+    setNotificacoes((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, lida: true } : n))
+    );
+  };
 
-  useEffect(() => {
-    carregar();
-  }, []);
-
-  async function enviarEmail() {
-    setAviso("");
-    setErro("");
-    setEnviando(true);
-    try {
-      const resposta = await notificacaoService.enviarPorEmail();
-      setAviso(resposta.message);
-    } catch (err) {
-      setErro(err.response?.data?.message || "Erro ao enviar o e-mail.");
-    } finally {
-      setEnviando(false);
-    }
-  }
+  const limparTodas = () => {
+    setNotificacoes([]);
+  };
 
   return (
-    <div className="notif-page">
+    <div className="notif-container">
+      
+      {/* Header */}
       <div className="notif-header">
-        <h1 className="notif-titulo">Notificações</h1>
-        <div className="notif-acoes">
-          <button className="notif-btn-sec" onClick={carregar}>Atualizar</button>
-          <button
-            className="notif-btn"
-            onClick={enviarEmail}
-            disabled={enviando || dados.total === 0}
-          >
-            {enviando ? "Enviando..." : "Enviar por e-mail"}
-          </button>
+        <div>
+          <h1>Notificações</h1>
+          <p>Fique por dentro de tudo que acontece no seu espaço.</p>
         </div>
+        {notificacoes.length > 0 && (
+          <button className="btn-limpar" onClick={limparTodas}>
+            Limpar tudo
+          </button>
+        )}
       </div>
 
-      {aviso && <p className="notif-sucesso">{aviso}</p>}
-      {erro && <p className="notif-erro">{erro}</p>}
-
-      {carregando ? (
-        <p className="notif-vazio">Carregando...</p>
-      ) : dados.total === 0 ? (
-        <div className="notif-vazio">
-          <p>🎉</p>
-          <p>{dados.mensagem || "Você não tem pendências no momento."}</p>
-        </div>
-      ) : (
-        <div className="notif-lista">
-          {dados.notificacoes.map((n) => (
-            <div key={n.id} className={`notif-card nivel-${n.nivel}`}>
-              <span className="notif-icone">{ICONES[n.tipo] || "🔔"}</span>
-              <div className="notif-corpo">
-                <span className="notif-nivel">{ROTULO_NIVEL[n.nivel]}</span>
-                <p className="notif-mensagem">{n.mensagem}</p>
+      {/* Lista de Notificações */}
+      <div className="notif-lista">
+        {notificacoes.length === 0 ? (
+          <div className="notif-empty">
+            <span className="notif-icon">🔔</span>
+            <h2>Tudo em dia!</h2>
+            <p>Você não tem nenhuma notificação no momento.</p>
+          </div>
+        ) : (
+          notificacoes.map((notif) => (
+            <div 
+              key={notif.id} 
+              className={`notif-card ${notif.lida ? "lida" : "nao-lida"}`}
+              onClick={() => !notif.lida && marcarComoLida(notif.id)}
+            >
+              <div className={`notif-indicador ${notif.tipo}`}></div>
+              
+              <div className="notif-conteudo">
+                <div className="notif-topo">
+                  <h3>{notif.titulo}</h3>
+                  <span className="notif-tempo">{notif.tempo}</span>
+                </div>
+                <p>{notif.mensagem}</p>
               </div>
-              <button className="notif-btn-sec" onClick={() => navigate(n.link)}>
-                Ver
-              </button>
+
+              {!notif.lida && <div className="notif-bolinha"></div>}
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
+
     </div>
   );
 }

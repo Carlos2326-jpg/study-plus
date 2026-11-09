@@ -1,8 +1,3 @@
-// ============================================================
-// CONTROLLER - Área 3: Relatórios
-// Study+
-// ============================================================
-
 import { relatorioService } from "../Services/relatorioService";
 
 export async function buscarProdutividade(filtros = {}) {

@@ -52,27 +52,3 @@ export const subtarefaService = {
     return response.data;
   },
 };
-
-// CRONOGRAMAS
-export const cronogramaService = {
-
-  listar: async (usuario_id) => {
-    const response = await api.get("/cronogramas", { params: { usuario_id } });
-    return response.data;
-  },
-
-  criar: async (dados) => {
-    const response = await api.post("/cronogramas", dados);
-    return response.data;
-  },
-
-  atualizar: async (id, dados) => {
-    const response = await api.put(`/cronogramas/${id}`, dados);
-    return response.data;
-  },
-
-  excluir: async (id) => {
-    const response = await api.delete(`/cronogramas/${id}`);
-    return response.data;
-  },
-};

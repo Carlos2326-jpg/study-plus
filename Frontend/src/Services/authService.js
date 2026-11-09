@@ -1,18 +1,15 @@
-import api from './api'; // Sua configuração do Axios
+import api from './api';
 
 export const authService = {
-  // Realiza a chamada de login e retorna os dados (Token e Usuário)
   login: async (email, senha) => {
     try {
       const response = await api.post('/auth/login', { email, senha });
-      return response.data; // Espera-se { token: '...', usuario: { id, nome, email } }
+      return response.data;
     } catch (error) {
-      // Lança o erro para ser capturado e tratado pelo Controller
-      throw error.response?.data?.message || 'Erro ao realizar login. Tente novamente.';
+      throw error.response?.data?.message || 'Erro ao realizar login.';
     }
   },
 
-  // Busca os dados do usuário logado usando o Token salvo
   getMe: async () => {
     try {
       const response = await api.get('/auth/me');
@@ -22,57 +19,49 @@ export const authService = {
     }
   },
 
-    // Atualiza os dados do perfil do usuário logado
   atualizarPerfil: async (dados) => {
     try {
       const response = await api.put('/auth/me', dados);
-      return response.data; // { message, usuario }
+      return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Erro ao atualizar o perfil.';
     }
   },
 
-  // Adicione este método dentro do objeto "authService" no seu src/services/authService.js
-
-  // Realiza a chamada de cadastro de um novo usuário
   register: async (nome, email, senha) => {
     try {
       const response = await api.post('/auth/register', { nome, email, senha });
-      return response.data; // Espera-se { token: '...', usuario: { id, nome, email } } ou mensagem de sucesso
+      return response.data;
     } catch (error) {
-      // Captura mensagens de erro do servidor (ex: "E-mail já cadastrado")
-      throw error.response?.data?.message || 'Erro ao criar conta. Tente novamente.';
+      // O back-end envia { message, erro }. Vamos pegar a mensagem exata.
+      throw error.response?.data?.message || 'Erro ao criar conta.';
     }
   },
 
-  // Adicione estes métodos dentro do objeto "authService" no seu src/services/authService.js
-
-  // Passo 1: Envia o e-mail do usuário solicitando o link de recuperação
   forgotPassword: async (email) => {
     try {
       const response = await api.post('/auth/forgot-password', { email });
-      return response.data; // Espera-se uma mensagem de sucesso como { message: 'E-mail enviado' }
+      return response.data;
     } catch (error) {
-      throw error.response?.data?.message || 'Erro ao processar solicitação de recuperação.';
+      throw error.response?.data?.message || 'Erro ao processar solicitação.';
     }
   },
 
-    validateCode: async (email, codigo) => {
+  validateCode: async (email, codigo) => {
     try {
       const response = await api.post('/auth/validate-code', { email, codigo });
-      return response.data; // { tokenTemporario }
+      return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Código inválido ou expirado.';
     }
   },
 
-  // Passo 2: Envia a nova senha acompanhada do token recebido por e-mail
-  resetPassword: async (token, novaSenha) => {
+  resetPassword: async (token, senha) => {
     try {
-      const response = await api.post('/auth/reset-password', { token, senha: novaSenha });
+      const response = await api.post('/auth/reset-password', { token, senha });
       return response.data;
     } catch (error) {
-      throw error.response?.data?.message || 'Erro ao redefinir a senha. Token inválido ou expirado.';
+      throw error.response?.data?.message || 'Erro ao redefinir a senha.';
     }
   },
 };

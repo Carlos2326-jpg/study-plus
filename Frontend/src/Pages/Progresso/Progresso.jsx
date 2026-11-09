@@ -1,344 +1,174 @@
-import React, { useState, useEffect } from "react";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend, LineChart, Line,
-} from "recharts";
-import {
-  buscarDadosGraficos,
-  buscarProdutividade,
-} from "../../Controllers/relatorioController";
-import { disciplinaService } from "../../Services/disciplinaService";
-import "../../Assets/Styles/Pages/Progresso.css";
+import React, { useState } from "react";
+import "../../Assets/Styles/Pages/ProgressoPage.css";
 
-const CORES = ["#6366f1", "#f59e0b", "#22c55e", "#ef4444", "#06b6d4"];
+export default function ProgressoPage() {
+  // --- Estados de Filtro ---
+  const [abaAtiva, setAbaAtiva] = useState("semana");
+  
+  // Mock dos dados (Substitua pela resposta do seu relatorioController)
+  const temRegistros = true; 
+  
+  const resumo = {
+    horasEstudadas: 12,
+    tarefasConcluidas: 18,
+    totalTarefas: 24,
+    percentualTarefas: 75,
+  };
 
-const PERIODOS = [
-  { valor: "", label: "Tudo" },
-  { valor: "semana", label: "Últimos 7 dias" },
-  { valor: "mes", label: "Últimos 30 dias" },
-  { valor: "ano", label: "Último ano" },
-  { valor: "personalizado", label: "Personalizado" },
-];
+  const ritmoSemanal = [
+    { dia: "Seg", valor: 1.5 },
+    { dia: "Ter", valor: 2 },
+    { dia: "Qua", valor: 1 },
+    { dia: "Qui", valor: 2.5 },
+    { dia: "Sex", valor: 2 },
+    { dia: "Sáb", valor: 3, destaque: true }, // Dia com maior foco
+    { dia: "Dom", valor: 0 },
+  ];
 
-const ESTADO_LABEL = {
-  pendente: "Pendentes",
-  em_andamento: "Em andamento",
-  concluida: "Concluídas",
-  bloqueada: "Bloqueadas",
-};
-
-const diaMes = (d) => `${d.slice(8, 10)}/${d.slice(5, 7)}`;
-
-function montarFiltros(periodo, ini, fim, disciplina) {
-  const f = {};
-  if (periodo === "personalizado") {
-    if (ini) f.data_inicio = ini;
-    if (fim) f.data_fim = fim;
-  } else if (periodo) {
-    f.periodo = periodo;
-  }
-  if (disciplina) f.disciplina = disciplina;
-  return f;
-}
-
-export default function Progresso() {
-  const [periodo, setPeriodo] = useState("");
-  const [ini, setIni] = useState("");
-  const [fim, setFim] = useState("");
-  const [disciplina, setDisciplina] = useState("");
-  const [disciplinas, setDisciplinas] = useState([]);
-  const [graficos, setGraficos] = useState(null);
-  const [produtividade, setProdutividade] = useState(null);
-  const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState("");
-  const [gerandoPdf, setGerandoPdf] = useState(false);
-
-  async function baixarPdf() {
-    setGerandoPdf(true);
-    setErro("");
-    try {
-      // Carrega a biblioteca só quando o botão é usado (não pesa o resto do site)
-      const [{ pdf }, { default: RelatorioPDF }] = await Promise.all([
-        import("@react-pdf/renderer"),
-        import("../../Components/Relatorio/RelatorioPDF"),
-      ]);
-
-      const diaBR = (d) => d.split("-").reverse().join("/");
-      const periodoTexto =
-        periodo === "personalizado"
-          ? `${ini ? diaBR(ini) : "início"} a ${fim ? diaBR(fim) : "hoje"}`
-          : PERIODOS.find((p) => p.valor === periodo)?.label || "Tudo";
-
-      const blob = await pdf(
-        <RelatorioPDF
-          produtividade={produtividade}
-          graficos={graficos}
-          periodoTexto={periodoTexto}
-          disciplinaTexto={disciplina || "Todas"}
-        />,
-      ).toBlob();
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `relatorio-studyplus-${new Date().toISOString().slice(0, 10)}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Erro ao gerar PDF:", err);
-      setErro("Não foi possível gerar o PDF.");
-    } finally {
-      setGerandoPdf(false);
-    }
-  }
-
-  useEffect(() => {
-    disciplinaService.listar().then(setDisciplinas).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    if (periodo === "personalizado" && ini && fim && ini > fim) {
-      setErro("A data inicial não pode ser posterior à data final.");
-      return;
-    }
-    let ativo = true;
-    setCarregando(true);
-    setErro("");
-    const filtros = montarFiltros(periodo, ini, fim, disciplina);
-    Promise.all([buscarDadosGraficos(filtros), buscarProdutividade(filtros)])
-      .then(([g, p]) => {
-        if (!ativo) return;
-        setGraficos(g);
-        setProdutividade(p);
-      })
-      .catch((e) => {
-        if (ativo) setErro(e?.response?.data?.message || "Erro ao carregar os dados.");
-      })
-      .finally(() => {
-        if (ativo) setCarregando(false);
-      });
-    return () => {
-      ativo = false;
-    };
-  }, [periodo, ini, fim, disciplina]);
-
-  const semDados = produtividade?.semDados;
-  const totalTarefas = produtividade?.totalTarefas ?? 0;
+  const tempoPorDisciplina = [
+    { nome: "Matemática", horas: 6, percentual: 50, cor: "var(--purple-dark)" },
+    { nome: "Física", horas: 4, percentual: 33.3, cor: "var(--purple-main)" },
+    { nome: "Redação", horas: 2, percentual: 16.7, cor: "var(--purple-light)" },
+  ];
 
   return (
-    <div className="progresso-page">
-      <h1 className="progresso-titulo">Progresso</h1>
-
-      {/* Filtros */}
-      <div className="progresso-filtros">
-        <label>
-          Período
-          <select value={periodo} onChange={(e) => setPeriodo(e.target.value)}>
-            {PERIODOS.map((p) => (
-              <option key={p.valor} value={p.valor}>{p.label}</option>
-            ))}
-          </select>
-        </label>
-        <button
-          type="button"
-          className="btn-pdf"
-          onClick={baixarPdf}
-          disabled={gerandoPdf || carregando || !produtividade || !graficos}
-        >
-          {gerandoPdf ? "Gerando PDF..." : "Baixar PDF"}
+    <div className="progresso-container">
+      
+      {/* 1. Header com Título e Ícone */}
+      <div className="progresso-header-top">
+        <div className="progresso-title-group">
+          <div className="logo-icon-small">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--branco)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <h1>Produtividade</h1>
+        </div>
+        <button className="btn-icone-quadrado">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple-dark)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
         </button>
-        {periodo === "personalizado" && (
-          <>
-            <label>
-              De
-              <input type="date" value={ini} onChange={(e) => setIni(e.target.value)} />
-            </label>
-            <label>
-              Até
-              <input type="date" value={fim} onChange={(e) => setFim(e.target.value)} />
-            </label>
-          </>
-        )}
-
-        <label>
-          Disciplina
-          <select value={disciplina} onChange={(e) => setDisciplina(e.target.value)}>
-            <option value="">Todas</option>
-            {disciplinas.map((d) => (
-              <option key={d.id} value={d.nome}>{d.nome}</option>
-            ))}
-          </select>
-        </label>
       </div>
 
-      {erro && <p className="mensagem-erro">{erro}</p>}
-      {carregando && <div className="progresso-loading">Carregando dados...</div>}
+      {/* 2. Tabs */}
+      <div className="progresso-tabs">
+        <button className={abaAtiva === "semana" ? "active" : ""} onClick={() => setAbaAtiva("semana")}>Semana</button>
+        <button className={abaAtiva === "mes" ? "active" : ""} onClick={() => setAbaAtiva("mes")}>Mês</button>
+        <button className={abaAtiva === "ano" ? "active" : ""} onClick={() => setAbaAtiva("ano")}>Ano</button>
+      </div>
 
-      {!carregando && !erro && produtividade && graficos && (
-        <>
-          {semDados ? (
-            <div className="progresso-vazio">
-              <p>{produtividade.mensagem || "Não há dados de estudo para o período selecionado."}</p>
-              <p>Use o Temporizador para registrar seu tempo de estudo!</p>
-            </div>
-          ) : (
-            <>
-              {/* Cards de resumo */}
-              <div className="resumo-cards">
-                <div className="resumo-card">
-                  <span className="resumo-valor">{produtividade.totalHoras}h</span>
-                  <span className="resumo-label">Total estudado</span>
+      {/* 3. Controles de Data */}
+      <div className="progresso-controles">
+        <div className="controle-data">
+          <button className="btn-seta">‹</button>
+          <span>📅 12 – 18 out. 2026</span>
+          <button className="btn-seta">›</button>
+        </div>
+        <div className="controle-filtros">
+          <button className="btn-filtro-disciplina">Todas as disciplinas ⌄</button>
+          <span className="txt-registros">Todos os registros</span>
+        </div>
+      </div>
+
+      {/* 4. Resumo Cards */}
+      <div className="progresso-resumo-grid">
+        <div className="card-resumo-destaque">
+          <span className="lbl">Horas estudadas</span>
+          <div className="valor-linha">
+            <span className="val-grande">{resumo.horasEstudadas} h</span>
+            <span className="val-pequeno">na semana</span>
+          </div>
+        </div>
+        <div className="card-resumo-branco">
+          <span className="lbl">Tarefas concluídas</span>
+          <div className="valor-linha">
+            <span className="val-grande">{resumo.tarefasConcluidas}</span>
+            <span className="val-pequeno">de {resumo.totalTarefas} · {resumo.percentualTarefas}%</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Gráficos Lado a Lado */}
+      <div className="progresso-graficos-grid">
+        
+        {/* Card: Seu Ritmo de Estudo */}
+        <div className="card-grafico">
+          <div className="card-header-flex">
+            <h3>Seu ritmo de estudo</h3>
+            <span className="legenda">Horas por dia</span>
+          </div>
+          <div className="bar-chart-container">
+            {ritmoSemanal.map((item, index) => (
+              <div key={index} className="bar-column">
+                <span className="bar-value">{item.valor}</span>
+                <div className="bar-wrapper">
+                  <div 
+                    className="bar-fill" 
+                    style={{ 
+                      height: `${(item.valor / 3) * 100}%`, 
+                      background: item.destaque ? "var(--purple-dark)" : "var(--purple-light)" 
+                    }}
+                  ></div>
                 </div>
-                <div className="resumo-card">
-                  <span className="resumo-valor">{produtividade.totalSessoes}</span>
-                  <span className="resumo-label">Sessões realizadas</span>
+                <span className="bar-label">{item.dia}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Card: Tempo por Disciplina */}
+        <div className="card-disciplinas">
+          <h3>Tempo por disciplina</h3>
+          <div className="lista-disciplinas">
+            {tempoPorDisciplina.map((disc, index) => (
+              <div key={index} className="disciplina-row">
+                <span className="disc-nome">{disc.nome}</span>
+                <div className="disc-bar-bg">
+                  <div 
+                    className="disc-bar-fill" 
+                    style={{ width: `${disc.percentual}%`, background: disc.cor }}
+                  ></div>
                 </div>
-                <div className="resumo-card">
-                  <span className="resumo-valor">
-                    {produtividade.disciplinaMaisEstudada || "—"}
-                  </span>
-                  <span className="resumo-label">Disciplina mais estudada</span>
-                </div>
-                <div className="resumo-card">
-                  <span className="resumo-valor">
-                    {produtividade.tarefasConcluidas}/{totalTarefas}
-                  </span>
-                  <span className="resumo-label">Tarefas concluídas</span>
-                </div>
+                <span className="disc-tempo">{disc.horas} h · {disc.percentual}%</span>
               </div>
+            ))}
+          </div>
+          <div className="alerta-maior-tempo">
+            <span className="icone-trofeu">🏆</span>
+            <span>Maior tempo: Matemática · 6 h</span>
+          </div>
+        </div>
+      </div>
 
-              {/* Evolução diária */}
-              {graficos.evolucao?.length > 0 && (
-                <div className="grafico-container">
-                  <h2>Evolução do tempo de estudo</h2>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <LineChart data={graficos.evolucao} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="data" tickFormatter={diaMes} tick={{ fontSize: 12 }} minTickGap={20} />
-                      <YAxis tick={{ fontSize: 13 }} unit="h" />
-                      <Tooltip
-                        labelFormatter={(d) => diaMes(d)}
-                        formatter={(v) => [`${v}h`, "Horas"]}
-                      />
-                      <Line type="monotone" dataKey="horas" stroke="#6366f1" strokeWidth={2} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
+      {/* 6. Painel de Resumo */}
+      <div className="card-painel-resumo">
+        <div className="painel-header">
+          <strong>Painel de resumo</strong>
+          <span className="seta">↗</span>
+        </div>
+        <p className="painel-txt">Tarefas: 18 de 24 · Meta de estudo: 12 de 16 h</p>
+        <div className="painel-progresso-bg">
+          <div className="painel-progresso-fill" style={{ width: '75%' }}></div>
+        </div>
+      </div>
 
-              {/* Gráfico de barras */}
-              <div className="grafico-container">
-                <h2>Horas por disciplina</h2>
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={graficos.barras} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="disciplina" tick={{ fontSize: 13 }} />
-                    <YAxis tick={{ fontSize: 13 }} unit="h" />
-                    <Tooltip formatter={(v) => [`${v}h`, "Horas"]} />
-                    <Bar dataKey="horas" radius={[6, 6, 0, 0]}>
-                      {graficos.barras.map((_, i) => (
-                        <Cell key={i} fill={CORES[i % CORES.length]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+      {/* 7. Botão de Relatório */}
+      <button className="btn-relatorio-detalhado">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Ver relatório detalhado <span>→</span>
+      </button>
 
-              {/* Gráfico de pizza */}
-              <div className="grafico-container">
-                <h2>Distribuição do tempo</h2>
-                <ResponsiveContainer width="100%" height={280}>
-                  <PieChart>
-                    <Pie data={graficos.pizza} cx="50%" cy="50%" outerRadius={100} dataKey="value">
-                      {graficos.pizza.map((_, i) => (
-                        <Cell key={i} fill={CORES[i % CORES.length]} />
-                      ))}
-                    </Pie>
-                    <Legend />
-                    <Tooltip formatter={(v) => [`${v}h`, "Horas"]} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Sessões do período */}
-              <div className="grafico-container">
-                <h2>Sessões do período</h2>
-                <table className="sessoes-tabela">
-                  <thead>
-                    <tr>
-                      <th>Data</th>
-                      <th>Disciplina</th>
-                      <th>Técnica</th>
-                      <th>Duração</th>
-                      <th>Pausas</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {produtividade.sessoes.slice(0, 10).map((s) => (
-                      <tr key={s.id}>
-                        <td>{s.inicio ? new Date(s.inicio).toLocaleString("pt-BR") : "—"}</td>
-                        <td>{s.disciplina}</td>
-                        <td>{s.tecnica_usada || "—"}</td>
-                        <td>{s.duracao_minutos ?? 0} min</td>
-                        <td>{s.pausas ?? 0}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {produtividade.sessoes.length > 10 && (
-                  <p className="sessoes-mais">
-                    Mostrando as 10 mais recentes de {produtividade.sessoes.length}.
-                  </p>
-                )}
-              </div>
-            </>
-          )}
-
-          {/* Tarefas por estado (não depende do período) */}
-          {graficos.tarefasPorEstado?.length > 0 && (
-            <div className="grafico-container">
-              <h2>Tarefas por estado</h2>
-              <div className="estados-lista">
-                {graficos.tarefasPorEstado.map((t) => (
-                  <div key={t.estado} className="estado-chip">
-                    <strong>{t.total}</strong> {ESTADO_LABEL[t.estado] || t.estado}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Termômetro de metas */}
-          {graficos.progresso?.length > 0 && (
-            <div className="grafico-container">
-              <h2>Metas — progresso atual</h2>
-              <div className="termometro-lista">
-                {graficos.progresso.map((item, i) => (
-                  <div key={i} className="termometro-item">
-                    <div className="termometro-header">
-                      <span className="termometro-disciplina">{item.disciplina}</span>
-                      <span className="termometro-percentual">{item.percentual}%</span>
-                    </div>
-                    <div className="termometro-bar">
-                      <div
-                        className="termometro-fill"
-                        style={{
-                          width: `${Math.min(100, item.percentual)}%`,
-                          background:
-                            item.percentual >= 100 ? "#22c55e" : item.percentual >= 50 ? "#f59e0b" : "#6366f1",
-                        }}
-                      />
-                    </div>
-                    <div className="termometro-detalhe">
-                      {item.cumprido}h cumpridas de {item.alvo}h
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </>
-      )}
     </div>
   );
 }

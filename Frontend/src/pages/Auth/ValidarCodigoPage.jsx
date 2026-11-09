@@ -1,69 +1,55 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Controllers/authController';
-import Button from '../../Components/ui/Button';
-import Input from '../../Components/ui/Input';
-import Header from '../../Components/layout/Header';
-import styles from '../../Assets/Styles/Pages/Login.css';
-import '../../Assets/Styles/Pages/ValidarCodigoPage.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Controllers/authController";
+import Button from "../../Components/ui/Button";
+import "../../Assets/Styles/Pages/AuthPages.css";
 
 export const ValidarCodigoPage = () => {
-  const [codigo, setCodigo] = useState('');
-  const navigate = useNavigate();
+  const [codigo, setCodigo] = useState("");
   const { handleValidarCodigo, erro, loading } = useAuth();
-
-  // Recupera o e-mail que o usuário digitou na tela anterior
-  const emailInformado = localStorage.getItem('@App:reset_email') || 'seu e-mail';
+  const navigate = useNavigate();
+  const email = localStorage.getItem("@App:reset_email") || "seu e-mail";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const resultado = await handleValidarCodigo(emailInformado, codigo);
-
+    const resultado = await handleValidarCodigo(email, codigo);
     if (resultado.sucesso) {
-      // Salva temporariamente o token que valida que o código estava certo
-      localStorage.setItem('@App:reset_token', resultado.tokenTemporario);
-
-      // Redireciona para a página de alteração/definição da nova senha
-      navigate('/reset-password');
+      localStorage.setItem("@App:reset_token", resultado.tokenTemporario);
+      navigate("/reset-password");
     }
   };
 
   return (
-    <div className={styles.containerLogin}>
-      <Header titulo="Verificar Código" />
+    <div className="auth-centered-container">
+      <div className="auth-card">
+        <h1 className="auth-title">Código de Segurança</h1>
+        <p className="auth-subtitle">
+          Insira o código de 4 dígitos enviado para o seu celular/e-mail para confirmar a identidade.
+        </p>
 
-      <div className={styles.cardLogin} style={{ maxWidth: '400px', margin: '40px auto' }}>
-        <form onSubmit={handleSubmit} className="login-form">
-          <h2>Código de Segurança</h2>
-          <p style={{ fontSize: '14px', marginBottom: '15px', color: '#666' }}>
-            Insira o código enviado para <strong>{emailInformado}</strong> para prosseguir.
-          </p>
+        {erro && <div className="error-message">{erro}</div>}
 
-          {erro && <div className="error-message">{erro}</div>}
-
-          <article className="form-group">
-            <Input
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <input
               type="text"
-              name="codigo"
-              placeholder="Digite o código de 6 dígitos"
+              maxLength={4}
               value={codigo}
               onChange={(e) => setCodigo(e.target.value)}
+              className="input-field"
+              style={{ textAlign: "center", fontSize: "1.5rem", letterSpacing: "0.5rem" }}
+              placeholder="0000"
               disabled={loading}
-              maxLength={6}
-              style={{ textAlign: 'center', fontSize: '18px', letterSpacing: '2px' }}
             />
-          </article>
+          </div>
 
-          <Button type="submit" disabled={loading}>
-            {loading ? 'Validando...' : 'Confirmar Código'}
+          <Button type="submit" disabled={loading} className="btn-auth">
+            {loading ? "Validando..." : "Confirmar"}
           </Button>
-
-          <article className="form-actions">
-            <span onClick={() => navigate('/forgot-password')} style={{ cursor: 'pointer' }}>
-              Voltar
-            </span>
-          </article>
+          
+          <span className="auth-link" onClick={() => navigate("/forgot-password")}>
+            Reenviar código
+          </span>
         </form>
       </div>
     </div>

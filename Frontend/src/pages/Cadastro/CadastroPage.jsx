@@ -1,19 +1,49 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { RegistroForm } from "./Forms/RegistroForm";
+import LogoFocusly from "../../Assets/images/logo-badge.png"; 
 import "../../Assets/Styles/Pages/CadastroPage.css";
 
 export const CadastroPage = () => {
-  const navigate = useNavigate();
   return (
-    <div className="cadastro-page">
-      <div className="cadastro-header">
-        <div className="cadastro-logo">
-          Pro<span>Seeds</span>
+    <div className="login-page-container">
+      {/* Lado Esquerdo (Visível apenas em telas maiores) */}
+      <aside className="login-aside">
+        <div className="login-aside-logo">
+          <img src={LogoFocusly} alt="Focusly" />
+          <span>Focusly</span>
         </div>
-        <p className="cadastro-tagline">Sua produtividade germina aqui 🌱</p>
-      </div>
-      <RegistroForm onVoltarLogin={() => navigate("/login")} />
+        
+        <div className="login-aside-content">
+          <span className="login-aside-tag">PRODUTIVIDADE SOB MEDIDA</span>
+          <h1>Mais foco.<br/>Mais progresso.</h1>
+          <p>Organize suas tarefas, planeje seus estudos e acompanhe sua evolução.</p>
+        </div>
+
+        <div className="login-aside-footer">
+          <p>Seu espaço para aprender e realizar.</p>
+        </div>
+      </aside>
+
+      {/* Lado Direito (O Formulário) */}
+      <main className="login-main">
+        <div className="login-form-wrapper">
+          
+          {/* Header Mobile (aparece só no celular) */}
+          <div className="login-mobile-header">
+            <img src={LogoFocusly} alt="Focusly" />
+            <h2>Focusly</h2>
+            <p>Produtividade sob medida</p>
+          </div>
+
+          {/* Header Desktop (Título do Formulário) */}
+          <div className="cadastro-header-desktop">
+            <h2>Crie sua conta</h2>
+            <p>Comece a organizar suas tarefas e treinar seu foco hoje mesmo.</p>
+          </div>
+
+          <RegistroForm />
+        </div>
+      </main>
     </div>
   );
 };

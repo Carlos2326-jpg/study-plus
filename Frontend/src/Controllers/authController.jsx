@@ -1,25 +1,47 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { authService } from '../Services/authService';
 
 const AuthContext = createContext({});
+
+const TOKEN_KEY = '@App:token';
+const RESET_EMAIL_KEY = '@App:reset_email';
+const RESET_TOKEN_KEY = '@App:reset_token';
+
+// Função auxiliar para extrair a mensagem de erro correta (seja string ou objeto do Axios)
+const normalizarErro = (err, fallback = 'Erro inesperado. Tente novamente.') => {
+  if (!err) return fallback;
+  if (typeof err === 'string') return err;
+  return err.response?.data?.message || err.response?.data?.erro || err.message || fallback;
+};
+
+const limparSessao = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(RESET_EMAIL_KEY);
+  localStorage.removeItem(RESET_TOKEN_KEY);
+};
 
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
 
+  // Função de logout declarada antes do useEffect para evitar problemas de escopo
+  const handleLogout = useCallback(() => {
+    limparSessao();
+    setUsuario(null);
+  }, []);
+
   // Verifica se já existe um token salvo ao carregar o app
   useEffect(() => {
     const verificarSessao = async () => {
-      const token = localStorage.getItem('@App:token');
+      const token = localStorage.getItem(TOKEN_KEY);
 
       if (token) {
         try {
-          // Se houver token, busca os dados atualizados do usuário
           const dadosUsuario = await authService.getMe();
           setUsuario(dadosUsuario);
         } catch (err) {
-          // Se o token estiver expirado, limpa tudo
+          // Se o token estiver expirado ou inválido, limpa a sessão
           handleLogout();
         }
       }
@@ -27,14 +49,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     verificarSessao();
-  }, []);
+  }, [handleLogout]);
 
   // Lógica de execução do Login
   const handleLogin = async (email, senha) => {
     setErro('');
     setLoading(true);
 
-    // Validação básica (Regra de Negócio no Front)
     if (!email || !senha) {
       setErro('Por favor, preencha todos os campos.');
       setLoading(false);
@@ -43,32 +64,23 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const data = await authService.login(email, senha);
-
-      // Guarda o token no localStorage para persistir a sessão
-      localStorage.setItem('@App:token', data.token);
-
-      // Atualiza o estado com o usuário logado
+      localStorage.setItem(TOKEN_KEY, data.token);
       setUsuario(data.usuario);
-
-      setLoading(false);
-      return true; // Login efetuado com sucesso
+      return true;
     } catch (err) {
-      setErro(err);
+      setErro(normalizarErro(err, 'Erro ao realizar login.'));
+      return false;
+    } finally {
       setLoading(false);
-      return false; // Falha no login
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('@App:token');
-    setUsuario(null);
-  };
-
+  // Lógica de Cadastro
   const handleRegister = async (nome, email, senha, confirmarSenha) => {
     setErro('');
     setLoading(true);
 
-    // Validações de Regra de Negócio no Front-end
+    // Validações de Front-end (espelhando as regras do seu Back-end)
     if (!nome || !email || !senha || !confirmarSenha) {
       setErro('Todos os campos são obrigatórios.');
       setLoading(false);
@@ -81,6 +93,7 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
 
+    // O Back-end (AutenticacaoService.js) exige mínimo de 6 caracteres
     if (senha.length < 6) {
       setErro('A senha deve conter no mínimo 6 caracteres.');
       setLoading(false);
@@ -90,18 +103,18 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authService.register(nome, email, senha);
 
-      // Se o seu back-end já autenticar o usuário direto no cadastro trazendo o token:
+      // Se o back-end já autenticar e retornar o token no cadastro
       if (data.token && data.usuario) {
-        localStorage.setItem('@App:token', data.token);
+        localStorage.setItem(TOKEN_KEY, data.token);
         setUsuario(data.usuario);
       }
-
-      setLoading(false);
-      return true; // Cadastro efetuado com sucesso
+      return true;
     } catch (err) {
-      setErro(err);
+      // Aqui vai capturar a mensagem exata do back-end (ex: "E-mail já cadastrado.")
+      setErro(normalizarErro(err, 'Erro ao criar conta.'));
+      return false;
+    } finally {
       setLoading(false);
-      return false; // Falha no cadastro
     }
   };
 
@@ -118,16 +131,39 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const data = await authService.forgotPassword(email);
-      setLoading(false);
       return { sucesso: true, mensagem: data.message || 'Link enviado com sucesso para o seu e-mail!' };
     } catch (err) {
-      setErro(err);
+      const mensagem = normalizarErro(err, 'Erro ao processar solicitação.');
+      setErro(mensagem);
+      return { sucesso: false, mensagem };
+    } finally {
       setLoading(false);
-      return { sucesso: false, mensagem: err };
     }
   };
 
-  // Dispara a redefinição de senha com o token
+  // Valida o código de 6 dígitos enviado por e-mail
+  const handleValidarCodigo = async (email, codigo) => {
+    setErro('');
+    setLoading(true);
+
+    if (!codigo || codigo.length < 4) {
+      setErro('Por favor, insira o código de verificação completo.');
+      setLoading(false);
+      return { sucesso: false };
+    }
+
+    try {
+      const data = await authService.validateCode(email, codigo);
+      return { sucesso: true, tokenTemporario: data.tokenTemporario };
+    } catch (err) {
+      setErro(normalizarErro(err, 'Não foi possível validar o código.'));
+      return { sucesso: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Redefine a senha usando o token temporário
   const handleResetPassword = async (token, novaSenha, confirmarNovaSenha) => {
     setErro('');
     setLoading(true);
@@ -152,45 +188,33 @@ export const AuthProvider = ({ children }) => {
 
     try {
       await authService.resetPassword(token, novaSenha);
-      setLoading(false);
       return true;
     } catch (err) {
-      setErro(err);
-      setLoading(false);
+      setErro(normalizarErro(err, 'Erro ao redefinir a senha.'));
       return false;
-    }
-  };
-
-  // Adicione esta função dentro do seu AuthProvider no src/controllers/authController.jsx
-
-  const handleValidarCodigo = async (email, codigo) => {
-    setErro('');
-    setLoading(true);
-
-    if (!codigo || codigo.length < 4) {
-      setErro('Por favor, insira o código de verificação completo.');
+    } finally {
       setLoading(false);
-      return { sucesso: false };
-    }
-
-    try {
-      const data = await authService.validateCode(email, codigo);
-      setLoading(false);
-      // Retorna o token temporário que o back-end gerou para permitir a troca de senha
-      return { sucesso: true, tokenTemporario: data.tokenTemporario };
-      } catch (err) {
-      setErro(typeof err === 'string' ? err : 'Não foi possível validar o código.');
-      setLoading(false);
-      return { sucesso: false };
     }
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, setUsuario, loading, erro, handleLogin, handleLogout, handleRegister, handleForgotPassword, handleResetPassword, handleValidarCodigo }}>
+    <AuthContext.Provider
+      value={{
+        usuario,
+        setUsuario,
+        loading,
+        erro,
+        handleLogin,
+        handleLogout,
+        handleRegister,
+        handleForgotPassword,
+        handleValidarCodigo,
+        handleResetPassword,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Hook personalizado para as Views consumirem o Controller facilmente
 export const useAuth = () => useContext(AuthContext);

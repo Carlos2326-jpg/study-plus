@@ -1,8 +1,3 @@
-// ============================================================
-// CONTROLLER - Área 3: Estudo (Cronogramas + Sessões)
-// Study+
-// ============================================================
-
 import { estudoService } from "../Services/estudoService";
 
 function validarCronograma(dados) {
