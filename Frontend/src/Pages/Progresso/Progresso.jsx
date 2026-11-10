@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../../Assets/Styles/Pages/ProgressoPage.css";
 import { relatorioService } from "../../Services/relatorioService";
+import { disciplinaService } from "../../Services/disciplinaService";
+import { tarefaService } from "../../Services/tarefaService"; // NOVO IMPORT
 
 export default function Progresso() {
   const [abaAtiva, setAbaAtiva] = useState("semana");
@@ -10,6 +12,12 @@ export default function Progresso() {
   const [graficos, setGraficos] = useState(null);
   const [erro, setErro] = useState("");
   const [gerandoPdf, setGerandoPdf] = useState(false);
+  
+  const [disciplinas, setDisciplinas] = useState([]);
+  const [filtroDisciplina, setFiltroDisciplina] = useState("");
+
+  // NOVO ESTADO: Tarefas reais para contagem
+  const [tarefasReais, setTarefasReais] = useState([]);
 
   // --- Lógica de Datas ---
   const getInicioFimSemana = (data) => {
@@ -49,6 +57,23 @@ export default function Progresso() {
   };
 
   useEffect(() => {
+    // Busca disciplinas e tarefas reais ao carregar
+    const carregarDadosFixos = async () => {
+      try {
+        const [discData, tarefasData] = await Promise.all([
+          disciplinaService.listar(),
+          tarefaService.listar()
+        ]);
+        setDisciplinas(discData);
+        setTarefasReais(tarefasData);
+      } catch (error) {
+        console.error("Erro ao carregar dados fixos:", error);
+      }
+    };
+    carregarDadosFixos();
+  }, []);
+
+  useEffect(() => {
     const carregarDados = async () => {
       setCarregando(true);
       setErro("");
@@ -67,6 +92,10 @@ export default function Progresso() {
           filtros = { data_inicio: formatarDataQuery(inicioAno), data_fim: formatarDataQuery(fimAno) };
         }
 
+        if (filtroDisciplina) {
+          filtros.disciplina = filtroDisciplina;
+        }
+
         const [resProd, resGraf] = await Promise.all([
           relatorioService.buscarProdutividade(filtros),
           relatorioService.buscarDadosGraficos(filtros)
@@ -82,9 +111,8 @@ export default function Progresso() {
       }
     };
     carregarDados();
-  }, [abaAtiva, dataReferencia]);
+  }, [abaAtiva, dataReferencia, filtroDisciplina]);
 
-  // --- FUNÇÃO DE GERAR PDF (Corrigida) ---
   const baixarPdf = async () => {
     setGerandoPdf(true);
     try {
@@ -97,18 +125,15 @@ export default function Progresso() {
         produtividade: produtividade || {},
         graficos: graficos || {},
         periodoTexto: "Período selecionado",
-        disciplinaTexto: "Todas"
+        disciplinaTexto: filtroDisciplina || "Todas"
       };
 
       const blob = await pdf(<RelatorioPDF {...dadosPdf} />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      
-      // Formata a data como AAAA-MM-DD para o nome do arquivo
       const dataFormatada = new Date().toISOString().slice(0, 10);
       link.download = `relatorio-StudyPlus-${dataFormatada}.pdf`;
-      
       link.click();
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -122,15 +147,29 @@ export default function Progresso() {
   if (carregando) return <div className="loading-screen">Carregando seu progresso...</div>;
   if (erro) return <div className="loading-screen" style={{ color: "red" }}>{erro}</div>;
 
-  const semDados = produtividade?.semDados;
+  const temHoras = produtividade?.totalHoras > 0;
+  
+  // CORREÇÃO: Conta as tarefas reais no Front-end de acordo com o filtro
+  const disciplinaSelecionadaObj = disciplinas.find(d => d.nome === filtroDisciplina);
+  const tarefasFiltradas = filtroDisciplina && disciplinaSelecionadaObj
+    ? tarefasReais.filter(t => t.disciplina_id === disciplinaSelecionadaObj.id)
+    : tarefasReais;
+
+  const totalTarefasReais = tarefasFiltradas.length;
+  const tarefasConcluidasReais = tarefasFiltradas.filter(t => t.status === "concluida").length;
+  
+  // Usa os valores reais se houver filtro, senão usa o do back-end (que é global)
+  const displayTotalTarefas = filtroDisciplina ? totalTarefasReais : (produtividade?.totalTarefas || 0);
+  const displayTarefasConcluidas = filtroDisciplina ? tarefasConcluidasReais : (produtividade?.tarefasConcluidas || 0);
+
+  const semDadosTotais = !temHoras && displayTarefasConcluidas === 0;
+
   const { inicio, fim } = getInicioFimSemana(dataReferencia);
 
-  // --- PREPARA OS DADOS DO GRÁFICO ---
+  // Prepara os dados do gráfico
   let ritmoAgrupado = [];
-
   if (graficos?.evolucao) {
     const evolucao = graficos.evolucao;
-
     if (abaAtiva === "semana") {
       const diasDaSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
       ritmoAgrupado = diasDaSemana.map(dia => ({ label: dia, valor: 0 }));
@@ -138,8 +177,7 @@ export default function Progresso() {
         const data = new Date(item.data + "T00:00:00");
         ritmoAgrupado[data.getDay()].valor += item.horas;
       });
-    } 
-    else if (abaAtiva === "mes") {
+    } else if (abaAtiva === "mes") {
       const semanas = [0, 0, 0, 0];
       evolucao.forEach(item => {
         const data = new Date(item.data + "T00:00:00");
@@ -150,8 +188,7 @@ export default function Progresso() {
         label: `Sem ${index + 1}`,
         valor: Number(totalHoras.toFixed(2))
       }));
-    } 
-    else if (abaAtiva === "ano") {
+    } else {
       const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
       const totalPorMes = Array(12).fill(0);
       evolucao.forEach(item => {
@@ -167,18 +204,21 @@ export default function Progresso() {
 
   const maiorValorRitmo = Math.max(...ritmoAgrupado.map(r => r.valor), 0.01);
 
-  const tempoPorDisciplina = graficos?.barras?.map((item, index) => ({
+  let tempoPorDisciplina = graficos?.barras?.map((item, index) => ({
     nome: item.disciplina,
     horas: item.horas,
     percentual: produtividade?.totalHoras > 0 ? Math.round((item.horas / produtividade.totalHoras) * 100) : 0,
     cor: index === 0 ? "var(--purple-dark)" : index === 1 ? "var(--purple-main)" : "var(--purple-light)"
   })) || [];
 
+  if (filtroDisciplina) {
+    tempoPorDisciplina = tempoPorDisciplina.filter(d => d.nome === filtroDisciplina);
+  }
+
   const maiorTempo = tempoPorDisciplina.length > 0 ? tempoPorDisciplina[0] : null;
 
   return (
     <div className="progresso-container">
-      {/* Header */}
       <div className="progresso-header-top">
         <div className="progresso-title-group">
           <div className="logo-icon-small">
@@ -191,14 +231,12 @@ export default function Progresso() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="progresso-tabs">
         <button className={abaAtiva === "semana" ? "active" : ""} onClick={() => setAbaAtiva("semana")}>Semana</button>
         <button className={abaAtiva === "mes" ? "active" : ""} onClick={() => setAbaAtiva("mes")}>Mês</button>
         <button className={abaAtiva === "ano" ? "active" : ""} onClick={() => setAbaAtiva("ano")}>Ano</button>
       </div>
 
-      {/* Navegação de Período */}
       <div className="progresso-controles">
         <div className="controle-data">
           <button className="btn-seta" onClick={() => navegar("anterior")}>‹</button>
@@ -213,15 +251,33 @@ export default function Progresso() {
           <button className="btn-seta" onClick={() => navegar("proximo")}>›</button>
         </div>
         <div className="controle-filtros">
-          <button className="btn-filtro-disciplina">Todas as disciplinas ⌄</button>
+          <select 
+            className="btn-filtro-disciplina" 
+            value={filtroDisciplina}
+            onChange={(e) => setFiltroDisciplina(e.target.value)}
+            style={{ 
+              background: "transparent", 
+              border: "1px solid var(--cinza-200)", 
+              borderRadius: "8px", 
+              padding: "0.35rem 0.75rem",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              color: "var(--texto-secundario)"
+            }}
+          >
+            <option value="">Todas as disciplinas</option>
+            {disciplinas.map(d => (
+              <option key={d.id} value={d.nome}>{d.nome}</option>
+            ))}
+          </select>
           <span className="txt-registros">Todos os registros</span>
         </div>
       </div>
 
-      {semDados ? (
+      {semDadosTotais ? (
         <div className="card-empty-state">
           <h2>Nenhuma atividade registrada</h2>
-          <p className="empty-descricao">Não há registros para este período.</p>
+          <p className="empty-descricao">Não há registros para este período ou disciplina.</p>
         </div>
       ) : (
         <>
@@ -236,8 +292,8 @@ export default function Progresso() {
             <div className="card-resumo-branco">
               <span className="lbl">Tarefas concluídas</span>
               <div className="valor-linha">
-                <span className="val-grande">{produtividade?.tarefasConcluidas || 0}</span>
-                <span className="val-pequeno">de {produtividade?.totalTarefas || 0}</span>
+                <span className="val-grande">{displayTarefasConcluidas}</span>
+                <span className="val-pequeno">de {displayTotalTarefas}</span>
               </div>
             </div>
           </div>
@@ -245,39 +301,50 @@ export default function Progresso() {
           <div className="progresso-graficos-grid">
             <div className="card-grafico">
               <div className="card-header-flex">
-                <h3>Seu ritmo de estudo</h3>
+                <h3>Seu ritmo de estudo {filtroDisciplina && `- ${filtroDisciplina}`}</h3>
                 <span className="legenda">
                   {abaAtiva === "semana" ? "Horas por dia" : abaAtiva === "mes" ? "Horas por semana" : "Horas por mês"}
                 </span>
               </div>
-              <div className="bar-chart-container">
-                {ritmoAgrupado.map((item, index) => {
-                  const altura = (item.valor / maiorValorRitmo) * 100;
-                  const isDestaque = item.valor === maiorValorRitmo && item.valor > 0;
+              
+              {!temHoras ? (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "160px", color: "var(--texto-secundario)", fontSize: "0.85rem", textAlign: "center" }}>
+                  <span style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⏱️</span>
+                  <p>Você ainda não registrou horas de estudo no Timer para esta disciplina.</p>
+                </div>
+              ) : (
+                <div className="bar-chart-container">
+                  {ritmoAgrupado.map((item, index) => {
+                    const altura = (item.valor / maiorValorRitmo) * 100;
+                    const isDestaque = item.valor === maiorValorRitmo && item.valor > 0;
 
-                  return (
-                    <div key={index} className="bar-column" style={{ flex: 1, minWidth: "20px" }}>
-                      <span className="bar-value">{item.valor > 0 ? item.valor : ""}</span>
-                      <div className="bar-wrapper">
-                        <div 
-                          className="bar-fill" 
-                          style={{ 
-                            height: `${Math.max(altura, 2)}%`,
-                            background: isDestaque ? "var(--purple-dark)" : "var(--purple-light)" 
-                          }}
-                        ></div>
+                    return (
+                      <div key={index} className="bar-column" style={{ flex: 1, minWidth: "20px" }}>
+                        <span className="bar-value">{item.valor > 0 ? item.valor : ""}</span>
+                        <div className="bar-wrapper">
+                          <div 
+                            className="bar-fill" 
+                            style={{ 
+                              height: `${Math.max(altura, 2)}%`,
+                              background: isDestaque ? "var(--purple-dark)" : "var(--purple-light)" 
+                            }}
+                          ></div>
+                        </div>
+                        <span className="bar-label" style={{ fontSize: "0.7rem" }}>{item.label}</span>
                       </div>
-                      <span className="bar-label" style={{ fontSize: "0.7rem" }}>{item.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             <div className="card-disciplinas">
               <h3>Tempo por disciplina</h3>
-              {tempoPorDisciplina.length === 0 ? (
-                <p style={{ fontSize: "0.85rem", color: "var(--cinza-400)" }}>Sem dados.</p>
+              {tempoPorDisciplina.length === 0 || !temHoras ? (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "160px", color: "var(--texto-secundario)", fontSize: "0.85rem", textAlign: "center" }}>
+                  <span style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</span>
+                  <p>Nenhuma hora registrada ainda.</p>
+                </div>
               ) : (
                 <>
                   <div className="lista-disciplinas">
@@ -304,12 +371,11 @@ export default function Progresso() {
         </>
       )}
 
-      {/* Botão PDF */}
       <button 
         className="btn-relatorio-detalhado" 
         onClick={baixarPdf} 
-        disabled={gerandoPdf || semDados}
-        style={{ opacity: (gerandoPdf || semDados) ? 0.5 : 1, cursor: (gerandoPdf || semDados) ? "not-allowed" : "pointer" }}
+        disabled={gerandoPdf || semDadosTotais}
+        style={{ opacity: (gerandoPdf || semDadosTotais) ? 0.5 : 1, cursor: (gerandoPdf || semDadosTotais) ? "not-allowed" : "pointer" }}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
