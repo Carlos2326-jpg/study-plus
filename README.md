@@ -9,14 +9,13 @@ O projeto é dividido em uma API RESTful robusta (Back-end), um banco de dados r
 ## 📸 Preview do Sistema
 
 > 💡 *Dica: Adicione aqui imagens das telas mais bonitas do projeto para causar uma ótima primeira impressão.*
+<img width="1920" height="1080" alt="login" src="https://github.com/user-attachments/assets/50ed5fe7-28f8-4b14-ae54-9007222385a4" />
 
-| Tela de Login | Dashboard / Estudos |
-| :---: | :---: |
-| ![Tela de Login](LINK_DA_IMAGEM_AQUI) | ![Dashboard](LINK_DA_IMAGEM_AQUI) |
+<img width="1920" height="1080" alt="pomodoro" src="https://github.com/user-attachments/assets/9aba456d-1a38-4f01-859a-82e27346aa99" />
 
-| Tarefas (Dark Mode) | Relatório em PDF |
-| :---: | :---: |
-| ![Tarefas Dark](LINK_DA_IMAGEM_AQUI) | ![PDF](LINK_DA_IMAGEM_AQUI) |
+<img width="1920" height="1080" alt="perfil" src="https://github.com/user-attachments/assets/84d26c4c-7a87-44c2-a3eb-b83fd2dfb8f0" />
+
+<img width="1920" height="1080" alt="Produtividade — semana com registros" src="https://github.com/user-attachments/assets/88ac5f63-8ec3-4fb1-876d-0e5703aaf5fd" />
 
 ---
 
