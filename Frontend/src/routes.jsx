@@ -10,7 +10,7 @@ import { RecuperarSenhaPage } from "./Pages/Auth/RecuperarSenhaPage";
 import { ValidarCodigoPage } from "./Pages/Auth/ValidarCodigoPage";
 import { ResetarSenhaPage } from "./Pages/Auth/ResetarSenhaPage";
 
-// Telas Internas (Estas usam export default, então NÃO têm chaves)
+// Telas Internas
 import TarefasPage from "./Pages/Tarefas/TarefasPage";
 import EstudosPage from "./Pages/Estudos/EstudosPage";
 import ListasPage from "./Pages/Listas/ListasPage";
@@ -47,8 +47,12 @@ export default function RouterComponent() {
         <Route path="/validate-code" element={<ValidarCodigoPage />} />
         <Route path="/reset-password" element={<ResetarSenhaPage />} />
 
-        {/* Rotas Protegidas */}
+        {/* Rotas Protegidas (com Sidebar e Bottom Nav) */}
         <Route element={<RotaProtegida />}>
+          {/* Redireciona a raiz e a rota antiga /dashboard para a nova tela principal */}
+          <Route path="/" element={<Navigate to="/tarefas" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/tarefas" replace />} />
+          
           <Route path="/tarefas" element={<TarefasPage />} />
           <Route path="/estudos" element={<EstudosPage />} />
           <Route path="/listas" element={<ListasPage />} />
@@ -59,8 +63,7 @@ export default function RouterComponent() {
           <Route path="/notificacoes" element={<Notificacoes />} />
         </Route>
 
-        {/* Redirecionamentos */}
-        <Route path="/" element={<Navigate to="/tarefas" replace />} />
+        {/* Fallback para qualquer outra rota errada */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

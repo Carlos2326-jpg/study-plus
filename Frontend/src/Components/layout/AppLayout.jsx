@@ -3,17 +3,28 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../../Controllers/authController";
 import "../../Assets/Styles/Layout.css";
 
+// Importando as imagens da pasta Assets/images
+import IconTarefas from "../../Assets/images/clipboard-check.png";
+import IconEstudos from "../../Assets/images/clipboard-check.png"; // Troque se tiver um ícone específico de livro
+import IconListas from "../../Assets/images/icon-calendar date event agenda.png"; // Troque se tiver um específico de lista
+import IconTimer from "../../Assets/images/icon-clock sand alarm timer.png";
+import IconCalendario from "../../Assets/images/icon-calendar date event agenda.png";
+import IconProgresso from "../../Assets/images/chart-no-axes-combined.png";
+import IconPerfil from "../../Assets/images/icon-user profile silhouette member.png";
+import LogoBadge from "../../Assets/images/logo-badge.png";
+
 export default function AppLayout() {
   const { handleLogout } = useAuth();
 
+  // Array com as imagens importadas
   const menuItems = [
-    { path: "/tarefas", label: "Tarefas", icon: "📋" },
-    { path: "/estudos", label: "Estudos", icon: "📚" },
-    { path: "/listas", label: "Listas", icon: "📝" },
-    { path: "/temporizador", label: "Timer", icon: "⏱" },
-    { path: "/calendario", label: "Calendário", icon: "📅" },
-    { path: "/progresso", label: "Progresso", icon: "📈" },
-    { path: "/perfil", label: "Perfil", icon: "👤" },
+    { path: "/tarefas", label: "Tarefas", icon: IconTarefas },
+    { path: "/estudos", label: "Estudos", icon: IconEstudos },
+    { path: "/listas", label: "Listas", icon: IconListas },
+    { path: "/temporizador", label: "Timer", icon: IconTimer },
+    { path: "/calendario", label: "Calendário", icon: IconCalendario },
+    { path: "/progresso", label: "Progresso", icon: IconProgresso },
+    { path: "/perfil", label: "Perfil", icon: IconPerfil },
   ];
 
   return (
@@ -21,10 +32,11 @@ export default function AppLayout() {
       {/* Menu Lateral (Desktop/Tablet) */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <img src="/logo-focusly.png" alt="Focusly" />
-          <span>Focusly</span>
+          {/* Usando a imagem importada */}
+          <img src={LogoBadge} alt="Study+" />
+          <span>Study+</span>
         </div>
-        
+
         <span className="sidebar-section-title">ESPAÇO DE ESTUDO</span>
         
         <nav className="sidebar-nav">
@@ -34,7 +46,8 @@ export default function AppLayout() {
               to={item.path}
               className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}
             >
-              <span className="icon">{item.icon}</span>
+              {/* O src agora recebe a imagem importada */}
+              <img src={item.icon} alt={item.label} className="sidebar-icon" />
               {item.label}
             </NavLink>
           ))}
@@ -59,7 +72,7 @@ export default function AppLayout() {
             to={item.path}
             className={({ isActive }) => isActive ? "bottom-link active" : "bottom-link"}
           >
-            <span className="icon">{item.icon}</span>
+            <img src={item.icon} alt={item.label} className="bottom-nav-icon" />
             <span className="label">{item.label}</span>
           </NavLink>
         ))}

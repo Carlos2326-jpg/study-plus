@@ -1,92 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { notificacaoService } from "../../Services/notificacaoService";
 import "../../Assets/Styles/Pages/Notificacoes.css";
 
 export default function Notificacoes() {
-  // Mock de notificações para visualização (depois você integra com a API)
-  const [notificacoes, setNotificacoes] = useState([
-    {
-      id: 1,
-      titulo: "Tarefa atrasada",
-      mensagem: 'A tarefa "Revisar protótipo Focusly" está atrasada há 2 dias.',
-      tempo: "Há 2 horas",
-      lida: false,
-      tipo: "alerta", // alerta, info, sucesso
-    },
-    {
-      id: 2,
-      titulo: "Meta quase atingida",
-      mensagem: "Você está a apenas 2 horas de bater sua meta semanal de Matemática.",
-      tempo: "Há 5 horas",
-      lida: false,
-      tipo: "info",
-    },
-    {
-      id: 3,
-      titulo: "Sessão concluída",
-      mensagem: "Você focou por 45 minutos na disciplina de Física. Bom trabalho!",
-      tempo: "Ontem",
-      lida: true,
-      tipo: "sucesso",
-    },
-  ]);
+  const navigate = useNavigate();
+  const [notificacoes, setNotificacoes] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
-  const marcarComoLida = (id) => {
-    setNotificacoes((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, lida: true } : n))
-    );
+  const carregarNotificacoes = async () => {
+    setCarregando(true);
+    setErro("");
+    try {
+      const res = await notificacaoService.listar();
+      // O back-end retorna { total, notificacoes, mensagem }
+      setNotificacoes(res.notificacoes || []);
+    } catch (error) {
+      console.error("Erro ao carregar notificações:", error);
+      setErro("Não foi possível carregar as notificações.");
+    } finally {
+      setCarregando(false);
+    }
   };
 
-  const limparTodas = () => {
-    setNotificacoes([]);
-  };
+  useEffect(() => {
+    carregarNotificacoes();
+  }, []);
+
+  if (carregando) return <div className="loading-screen">Carregando notificações...</div>;
 
   return (
     <div className="notif-container">
-      
-      {/* Header */}
       <div className="notif-header">
         <div>
           <h1>Notificações</h1>
           <p>Fique por dentro de tudo que acontece no seu espaço.</p>
         </div>
-        {notificacoes.length > 0 && (
-          <button className="btn-limpar" onClick={limparTodas}>
-            Limpar tudo
-          </button>
-        )}
+        <button className="btn-limpar" onClick={carregarNotificacoes}>
+          Atualizar
+        </button>
       </div>
 
-      {/* Lista de Notificações */}
       <div className="notif-lista">
-        {notificacoes.length === 0 ? (
+        {erro ? (
+          <div className="notif-empty">
+            <h2>Ops!</h2>
+            <p>{erro}</p>
+          </div>
+        ) : notificacoes.length === 0 ? (
           <div className="notif-empty">
             <span className="notif-icon">🔔</span>
             <h2>Tudo em dia!</h2>
-            <p>Você não tem nenhuma notificação no momento.</p>
+            <p>Você não tem nenhuma pendência no momento.</p>
           </div>
         ) : (
           notificacoes.map((notif) => (
             <div 
               key={notif.id} 
-              className={`notif-card ${notif.lida ? "lida" : "nao-lida"}`}
-              onClick={() => !notif.lida && marcarComoLida(notif.id)}
+              className={`notif-card ${notif.nivel}`}
+              style={{ borderLeftColor: notif.nivel === 'alta' ? 'var(--cor-alta-texto)' : notif.nivel === 'media' ? 'var(--cor-media-texto)' : 'var(--cor-baixa-texto)' }}
             >
-              <div className={`notif-indicador ${notif.tipo}`}></div>
-              
               <div className="notif-conteudo">
                 <div className="notif-topo">
-                  <h3>{notif.titulo}</h3>
-                  <span className="notif-tempo">{notif.tempo}</span>
+                  <h3>{notif.tipo === 'tarefa_atrasada' ? '⏰ Tarefa Atrasada' : notif.tipo === 'meta_prazo' ? '🎯 Meta Próxima' : '⚠️ Aviso'}</h3>
                 </div>
                 <p>{notif.mensagem}</p>
               </div>
-
-              {!notif.lida && <div className="notif-bolinha"></div>}
+              <button 
+                className="btn-limpar" 
+                style={{ fontSize: "0.75rem", padding: "0.25rem 0.75rem" }}
+                onClick={() => navigate(notif.link || "/tarefas")}
+              >
+                Ver
+              </button>
             </div>
           ))
         )}
       </div>
-
     </div>
   );
 }

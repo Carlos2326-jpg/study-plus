@@ -3,7 +3,7 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
-// Paleta Focusly (Roxo)
+// Paleta Study+ (Roxo)
 const COR = {
   primaria: "#3D2C5E", // Roxo Escuro
   texto: "#111827",
@@ -167,10 +167,10 @@ export default function RelatorioPDF({
   const cores = [COR.primaria, COR.ambar, COR.destaque, "#ef4444", "#06b6d4"];
 
   return (
-    <Document title="Relatório de Progresso - Focusly" author="Focusly">
+    <Document title="Relatório de Progresso - Study+" author="Study+">
       <Page size="A4" style={e.pagina}>
         <View style={e.topo}>
-          <Text style={e.titulo}>Focusly - Relatório de Progresso</Text>
+          <Text style={e.titulo}>Study+ - Relatório de Progresso</Text>
           <Text style={e.sub}>
             Período: {periodoTexto} | Disciplina: {disciplinaTexto} | Gerado em{" "}
             {geradoEm}
@@ -339,7 +339,7 @@ export default function RelatorioPDF({
         )}
 
         <View style={e.rodape} fixed>
-          <Text>Focusly</Text>
+          <Text>Study+</Text>
           <Text
             render={({ pageNumber, totalPages }) =>
               `Página ${pageNumber} de ${totalPages}`

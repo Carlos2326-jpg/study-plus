@@ -1,38 +1,38 @@
 :root {
   /*  CORES PRIMÁRIAS (Roxo e Lavanda)  */
-  --purple-dark: #3D2C5E; 
-  --purple-main: #5E4B7A;     
-  --purple-light: #9A86B9;    
-  --purple-bg: #F8F6FC;      
-  --purple-suave: #F0EBF8;    
+  --purple-dark: #3d2c5e;
+  --purple-main: #5e4b7a;
+  --purple-light: #9a86b9;
+  --purple-bg: #f8f6fc;
+  --purple-suave: #f0ebf8;
 
   /*  CORES DE APOIO (Status e Alertas)  */
-  --cor-alta-bg: #FCE8E6;     
-  --cor-alta-texto: #D93025;   
-  
-  --cor-media-bg: #FEF3C7;     
-  --cor-media-texto: #D97706; 
-  
-  --cor-baixa-bg: #E6F4EA;     
-  --cor-baixa-texto: #1E8E3E;  
+  --cor-alta-bg: #fce8e6;
+  --cor-alta-texto: #d93025;
+
+  --cor-media-bg: #fef3c7;
+  --cor-media-texto: #d97706;
+
+  --cor-baixa-bg: #e6f4ea;
+  --cor-baixa-texto: #1e8e3e;
 
   /*  NEUTROS  */
-  --branco: #FFFFFF;
-  --cinza-50: #F9FAFB;         
-  --cinza-100: #F3F4F6;       
-  --cinza-200: #E5E7EB;       
-  --cinza-400: #9CA3AF;       
-  --cinza-600: #6B7280;        
+  --branco: #ffffff;
+  --cinza-50: #f9fafb;
+  --cinza-100: #f3f4f6;
+  --cinza-200: #e5e7eb;
+  --cinza-400: #9ca3af;
+  --cinza-600: #6b7280;
 
   /*  TEXTO  */
-  --texto-principal: #111827;  /* Quase preto para leitura principal */
-  --texto-secundario: #6B7280; /* Cinza para subtítulos e datas */
+  --texto-principal: #111827; /* Quase preto para leitura principal */
+  --texto-secundario: #6b7280; /* Cinza para subtítulos e datas */
 
   /*  RAIOS (Bordas arredondadas)  */
-  --raio-sm: 8px;              /* Botões menores, badges */
-  --raio: 12px;                /* Inputs e botões de ação */
-  --raio-lg: 24px;             /* Cards principais (como no protótipo) */
-  --raio-pill: 999px;          /* Formato de pílula (tags, botões redondos) */
+  --raio-sm: 8px; /* Botões menores, badges */
+  --raio: 12px; /* Inputs e botões de ação */
+  --raio-lg: 24px; /* Cards principais (como no protótipo) */
+  --raio-pill: 999px; /* Formato de pílula (tags, botões redondos) */
 
   /*  SOMBRAS  */
   --sombra-suave: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -41,25 +41,40 @@
 
   /*  TIPOGRAFIA  */
   --fonte-base: "Inter", "DM Sans", system-ui, sans-serif;
-  
-  --font-size-h1: 26px;        
-  --font-size-h2: 18px;        
-  --font-size-text: 15px;      
-  --font-size-sm: 13px;        
+
+  --font-size-h1: 26px;
+  --font-size-h2: 18px;
+  --font-size-text: 15px;
+  --font-size-sm: 13px;
   --text-bold: 700;
   --text-semibold: 600;
 
   /*  LAYOUT  */
-  --altura-bottom-nav: 70px;   
+  --altura-bottom-nav: 70px;
   --altura-header: 60px;
 
   /*  FORMULÁRIOS (Inputs e Botões)  */
-  --width-input-button: 100%; 
+  --width-input-button: 100%;
   --height-input: 52px;
   --border-radius-input: 12px;
   --font-size-input: 15px;
-  
+
   --height-button: 52px;
   --border-radius-button: 12px;
   --font-size-button: 16px;
+
+  /*  TEMA ESCURO  */
+  body.dark-mode {
+    --branco: #1e1e2e; /* Fundo escuro */
+    --cinza-50: #252538;
+    --cinza-100: #2d2d44;
+    --cinza-200: #3f3f5a;
+    --texto-principal: #f8f8f2;
+    --texto-secundario: #b0b0c0;
+    --purple-suave: #2d2d44;
+
+    /* Ajustes para os cards não sumirem no fundo */
+    --sombra-suave: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --sombra-media: 0 8px 24px rgba(0, 0, 0, 0.6);
+  }
 }
