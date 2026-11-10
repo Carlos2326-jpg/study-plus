@@ -26,6 +26,20 @@ export default function Temporizador() {
 
   const intervalRef = useRef(null);
 
+  const duracaoSegundos = (t = tecnica) => {
+  const min = t === "curto" ? pausaCurtaMin : t === "longo" ? pausaLongaMin : focoMin;
+    return Number(min) * 60;
+  };
+
+    // Sem sessão ativa, o relógio sempre mostra a duração da técnica escolhida
+  useEffect(() => {
+    if (!sessaoAtiva) {
+      setRodando(false);
+      setTempo(duracaoSegundos());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessaoAtiva, tecnica, focoMin, pausaCurtaMin, pausaLongaMin]);
+
   // 1. Carrega disciplinas e verifica sessão ativa
   useEffect(() => {
     const inicializar = async () => {
@@ -101,12 +115,12 @@ export default function Temporizador() {
       const novaSessao = await estudoService.iniciarSessao({
         disciplina: disciplinaSelecionada,
         tecnica_usada: tecnica,
-        foco_min: Number(focoMin),
+        foco_min: duracaoSegundos() / 60,
         pausa_min: Number(pausaCurtaMin),
-        blocos: Number(qtdBlocos)
+        blocos: tecnica === "pomodoro" ? Number(qtdBlocos) : 1
       });
       setSessaoAtiva(novaSessao.data);
-      setTempo(focoMin * 60);
+      setTempo(duracaoSegundos());
       setBlocoAtual(1);
       setRodando(true);
     } catch (error) {
@@ -142,19 +156,20 @@ export default function Temporizador() {
   // Quando o tempo zera, avança o bloco (Lógica simples local)
   useEffect(() => {
     if (tempo === 0 && sessaoAtiva) {
-      if (blocoAtual < qtdBlocos) {
+      if (tecnica === "pomodoro" && blocoAtual < qtdBlocos) {
         alert(`Fim do bloco ${blocoAtual}! Faça uma pausa de ${pausaCurtaMin} minutos.`);
         setBlocoAtual(prev => prev + 1);
-        setTempo(focoMin * 60); // Volta ao foco (num app real, entraria em pausa)
+        setTempo(focoMin * 60);
       } else {
-        alert("Todos os blocos concluídos! Sessão finalizada.");
+        alert("Tempo concluído! Sessão finalizada.");
         encerrarSessao();
       }
     }
-  }, [tempo, sessaoAtiva, blocoAtual, qtdBlocos, focoMin, pausaCurtaMin]);
+  }, [tempo, sessaoAtiva, blocoAtual, qtdBlocos, focoMin, pausaCurtaMin, tecnica]);
+
 
   // Cálculo do progresso para o círculo SVG
-  const tempoTotal = focoMin * 60;
+  const tempoTotal = duracaoSegundos();
   const progresso = ((tempoTotal - tempo) / tempoTotal) * 100;
   const raio = 120;
   const circunferencia = 2 * Math.PI * raio;
