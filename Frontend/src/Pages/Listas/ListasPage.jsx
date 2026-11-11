@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import "../../Assets/Styles/Pages/ListasPage.css";
 import { tarefaService, subtarefaService } from "../../Services/tarefaService";
 import { disciplinaService } from "../../Services/disciplinaService";
-import { formatarData } from "../../Utils/formatters";
+import { estudoService } from "../../Services/estudoService";
+import { formatarData, formatarHorario } from "../../Utils/formatters";
 
 const CORES_DISCIPLINAS = [
   "var(--purple-dark)", 
@@ -15,6 +16,7 @@ const CORES_DISCIPLINAS = [
 export default function ListasPage() {
   const [disciplinas, setDisciplinas] = useState([]);
   const [tarefas, setTarefas] = useState([]);
+  const [cronogramas, setCronogramas] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [busca, setBusca] = useState("");
   
@@ -25,12 +27,14 @@ export default function ListasPage() {
   const carregarDados = useCallback(async () => {
     setCarregando(true);
     try {
-      const [disciplinasData, tarefasData] = await Promise.all([
+      const [disciplinasData, tarefasData, cronogramasData] = await Promise.all([
         disciplinaService.listar(),
-        tarefaService.listar()
+        tarefaService.listar(),
+        estudoService.listarCronogramas()
       ]);
       setDisciplinas(disciplinasData);
       setTarefas(tarefasData);
+      setCronogramas(cronogramasData.data || cronogramasData);
     } catch (error) {
       console.error("Erro ao carregar listas:", error);
     } finally {
@@ -42,6 +46,7 @@ export default function ListasPage() {
     carregarDados();
   }, [carregarDados]);
 
+  // --- Lógica para buscar Subtarefas ---
   const toggleSubtarefas = async (tarefaId) => {
     if (tarefaExpandida === tarefaId) {
       setTarefaExpandida(null);
@@ -49,7 +54,6 @@ export default function ListasPage() {
     }
 
     setTarefaExpandida(tarefaId);
-
     if (subtarefas[tarefaId]) return;
 
     try {
@@ -69,11 +73,10 @@ export default function ListasPage() {
     }
   };
 
-  // --- Marcar/Desmarcar Subtarefa ---
+  // --- FUNÇÃO QUE ESTAVA FALTANDO ---
   const handleToggleSubtarefa = async (subtarefa, tarefaId) => {
     try {
-      // Garante que estamos enviando booleano, convertendo o 0/1 do banco
-      const statusAtual = subtarefa.concluida === 1 || subtarefa.concluida === true;
+      const statusAtual = subtarefa.concluida === 1 || subtarefa.concluida === true || subtarefa.concluida === '1';
       const novoStatus = !statusAtual;
       
       await subtarefaService.atualizar(subtarefa.id, { 
@@ -95,16 +98,14 @@ export default function ListasPage() {
     }
   };
 
-  // --- Marcar/Desmarcar Tarefa Principal (Com efeito cascata) ---
+  // --- Ações Reais no Banco de Dados ---
   const handleToggleTarefa = async (tarefa) => {
     try {
       const statusAtual = tarefa.status === "concluida";
       const novoStatus = statusAtual ? "pendente" : "concluida";
       
-      // 1. Atualiza a tarefa principal
       await tarefaService.atualizar(tarefa.id, { ...tarefa, status: novoStatus });
       
-      // 2. Se estiver marcando como concluída, marca todas as subtarefas como concluídas também
       if (novoStatus === "concluida") {
         const subsDaTarefa = subtarefas[tarefa.id];
         if (subsDaTarefa && subsDaTarefa.length > 0) {
@@ -114,9 +115,7 @@ export default function ListasPage() {
         }
       }
 
-      // 3. Recarrega a tela para refletir as mudanças
       carregarDados(); 
-      // Limpa o cache de subtarefas dessa tarefa para forçar recarregar as subtarefas atualizadas
       setSubtarefas(prev => {
         const novoCache = { ...prev };
         delete novoCache[tarefa.id];
@@ -169,6 +168,10 @@ export default function ListasPage() {
   const tarefasFiltradas = tarefas.filter(t => 
     t.titulo.toLowerCase().includes(busca.toLowerCase())
   );
+  
+  const cronogramasFiltrados = cronogramas.filter(c => 
+    (c.disciplina || "").toLowerCase().includes(busca.toLowerCase())
+  );
 
   return (
     <div className="listas-container">
@@ -181,7 +184,7 @@ export default function ListasPage() {
         <input 
           type="text" 
           className="listas-input-busca" 
-          placeholder="Buscar tarefa..." 
+          placeholder="Buscar tarefa ou estudo..." 
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
@@ -193,6 +196,7 @@ export default function ListasPage() {
         ) : (
           disciplinas.map((disc, index) => {
             const tarefasDaDisciplina = tarefasFiltradas.filter(t => t.disciplina_id === disc.id);
+            const cronogramasDaDisciplina = cronogramasFiltrados.filter(c => c.disciplina === disc.nome);
             const corBolinha = CORES_DISCIPLINAS[index % CORES_DISCIPLINAS.length];
 
             return (
@@ -209,6 +213,46 @@ export default function ListasPage() {
                   </div>
                 </div>
 
+                {/* Cronogramas / Estudos Agendados */}
+                {cronogramasDaDisciplina.length > 0 && (
+                  <div style={{ marginBottom: "1rem" }}>
+                    <h3 style={{ fontSize: "0.85rem", color: "var(--texto-secundario)", marginBottom: "0.5rem", fontWeight: 600 }}>📅 Estudos Agendados</h3>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      {cronogramasDaDisciplina.map((crono) => (
+                        <div key={crono.id} style={{ 
+                          background: "var(--purple-suave)", 
+                          padding: "0.75rem 1rem", 
+                          borderRadius: "var(--raio)",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center"
+                        }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
+                            <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--purple-dark)" }}>
+                              {crono.tarefa_titulo || "Estudo agendado"} 
+                            </span>
+                            <span style={{ fontSize: "0.8rem", color: "var(--texto-secundario)" }}>
+                              {formatarData(crono.data)} • {formatarHorario(crono.hora_inicio)} - {formatarHorario(crono.hora_fim)}
+                              {crono.recorrencia !== "nenhuma" && ` • Repete ${crono.recorrencia}`}
+                            </span>
+                          </div>
+                          <span style={{ 
+                            fontSize: "0.7rem", 
+                            background: "var(--purple-light)", 
+                            color: "white", 
+                            padding: "0.2rem 0.6rem", 
+                            borderRadius: "var(--raio-pill)",
+                            fontWeight: 600
+                          }}>
+                            {crono.recorrencia === "nenhuma" ? "Único" : "Recorrente"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tarefas */}
                 <div className="grupo-tarefas">
                   {tarefasDaDisciplina.length === 0 ? (
                     <p style={{ fontSize: "0.85rem", color: "var(--cinza-400)", padding: "0.5rem" }}>Nenhuma tarefa nesta lista.</p>
@@ -259,9 +303,7 @@ export default function ListasPage() {
                               <span style={{ fontSize: "0.8rem", color: "var(--cinza-400)" }}>Nenhuma subtarefa cadastrada.</span>
                             ) : (
                               subtarefas[tarefa.id]?.map(sub => {
-                                // CORREÇÃO 1: Converte o 0/1 do banco para Booleano e limpa o visual
                                 const isConcluida = sub.concluida === 1 || sub.concluida === true || sub.concluida === '1';
-                                
                                 return (
                                   <div 
                                     key={sub.id} 

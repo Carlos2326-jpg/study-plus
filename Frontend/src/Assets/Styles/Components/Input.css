@@ -3,6 +3,7 @@
 .input-wrapper {
   display: flex;
   width: 100%;
+  position: relative; /* Necessário para posicionar o botão */
 }
 
 .input-field {
@@ -30,20 +31,20 @@
   cursor: not-allowed;
 }
 
-/* Estilo do botão Mostrar/Ocultar */
+/* Botão MOSTRAR/OCULTAR centralizado e fixo */
 .input-password-toggle {
   position: absolute;
-  right: 12px;
+  right: 1rem; /* Fixo na direita */
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--purple-light);
-  font-size: 0.8rem;
-  font-weight: 600;
   cursor: pointer;
-  padding: 4px;
-  text-transform: uppercase;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.2s;
 }
 
@@ -51,7 +52,7 @@
   color: var(--purple-dark);
 }
 
-input[type="password"].input-field,
-input[type="text"].input-field + .input-password-toggle {
-  padding-right: 75px;
+/* Adiciona um espaço extra à direita do input para o ícone não cobrir o texto */
+.input-wrapper:has(.input-password-toggle) .input-field {
+  padding-right: 3rem;
 }

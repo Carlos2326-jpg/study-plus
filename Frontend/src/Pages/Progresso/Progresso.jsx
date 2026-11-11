@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../Assets/Styles/Pages/ProgressoPage.css";
 import { relatorioService } from "../../Services/relatorioService";
 import { disciplinaService } from "../../Services/disciplinaService";
-import { tarefaService } from "../../Services/tarefaService"; // NOVO IMPORT
+import { tarefaService } from "../../Services/tarefaService";
 
 export default function Progresso() {
   const [abaAtiva, setAbaAtiva] = useState("semana");
@@ -14,10 +14,8 @@ export default function Progresso() {
   const [gerandoPdf, setGerandoPdf] = useState(false);
   
   const [disciplinas, setDisciplinas] = useState([]);
-  const [filtroDisciplina, setFiltroDisciplina] = useState("");
-
-  // NOVO ESTADO: Tarefas reais para contagem
   const [tarefasReais, setTarefasReais] = useState([]);
+  const [filtroDisciplina, setFiltroDisciplina] = useState("");
 
   // --- Lógica de Datas ---
   const getInicioFimSemana = (data) => {
@@ -57,7 +55,7 @@ export default function Progresso() {
   };
 
   useEffect(() => {
-    // Busca disciplinas e tarefas reais ao carregar
+    // Busca dados fixos (disciplinas e tarefas reais)
     const carregarDadosFixos = async () => {
       try {
         const [discData, tarefasData] = await Promise.all([
@@ -147,9 +145,7 @@ export default function Progresso() {
   if (carregando) return <div className="loading-screen">Carregando seu progresso...</div>;
   if (erro) return <div className="loading-screen" style={{ color: "red" }}>{erro}</div>;
 
-  const temHoras = produtividade?.totalHoras > 0;
-  
-  // CORREÇÃO: Conta as tarefas reais no Front-end de acordo com o filtro
+  // Contagem de tarefas real baseada no filtro
   const disciplinaSelecionadaObj = disciplinas.find(d => d.nome === filtroDisciplina);
   const tarefasFiltradas = filtroDisciplina && disciplinaSelecionadaObj
     ? tarefasReais.filter(t => t.disciplina_id === disciplinaSelecionadaObj.id)
@@ -158,10 +154,10 @@ export default function Progresso() {
   const totalTarefasReais = tarefasFiltradas.length;
   const tarefasConcluidasReais = tarefasFiltradas.filter(t => t.status === "concluida").length;
   
-  // Usa os valores reais se houver filtro, senão usa o do back-end (que é global)
   const displayTotalTarefas = filtroDisciplina ? totalTarefasReais : (produtividade?.totalTarefas || 0);
   const displayTarefasConcluidas = filtroDisciplina ? tarefasConcluidasReais : (produtividade?.tarefasConcluidas || 0);
 
+  const temHoras = produtividade?.totalHoras > 0;
   const semDadosTotais = !temHoras && displayTarefasConcluidas === 0;
 
   const { inicio, fim } = getInicioFimSemana(dataReferencia);
@@ -204,12 +200,18 @@ export default function Progresso() {
 
   const maiorValorRitmo = Math.max(...ritmoAgrupado.map(r => r.valor), 0.01);
 
-  let tempoPorDisciplina = graficos?.barras?.map((item, index) => ({
-    nome: item.disciplina,
-    horas: item.horas,
-    percentual: produtividade?.totalHoras > 0 ? Math.round((item.horas / produtividade.totalHoras) * 100) : 0,
-    cor: index === 0 ? "var(--purple-dark)" : index === 1 ? "var(--purple-main)" : "var(--purple-light)"
-  })) || [];
+  // --- FILTRO DE DISCIPLINAS FANTASMAS ---
+  // Pega as barras enviadas pelo Back-end e remove as que não existem mais no banco
+  const nomesDisciplinasReais = disciplinas.map(d => d.nome);
+  
+  let tempoPorDisciplina = graficos?.barras
+    ?.filter(item => nomesDisciplinasReais.includes(item.disciplina)) // Remove fantasmas
+    ?.map((item, index) => ({
+      nome: item.disciplina,
+      horas: item.horas,
+      percentual: produtividade?.totalHoras > 0 ? Math.round((item.horas / produtividade.totalHoras) * 100) : 0,
+      cor: index === 0 ? "var(--purple-dark)" : index === 1 ? "var(--purple-main)" : "var(--purple-light)"
+    })) || [];
 
   if (filtroDisciplina) {
     tempoPorDisciplina = tempoPorDisciplina.filter(d => d.nome === filtroDisciplina);

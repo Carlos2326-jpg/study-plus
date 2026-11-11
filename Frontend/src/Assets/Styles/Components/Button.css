@@ -1,10 +1,10 @@
 @import "../variaveis.css";
 
 .btn {
-  width: 100%; 
+  width: 100%; /* Faz o botão preencher o container */
   height: var(--height-button);
   border-radius: var(--border-radius-button);
-  background: var(--purple-dark); 
+  background: var(--purple-dark); /* Roxo escuro chapado */
   color: var(--branco);
   font-size: var(--font-size-button);
   font-weight: var(--text-bold);

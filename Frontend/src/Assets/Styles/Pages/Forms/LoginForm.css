@@ -12,6 +12,7 @@
   gap: 0.4rem;
   margin-bottom: 1.25rem; 
   width: 100%;
+  align-items: center;  /* Centraliza o bloco do input na tela */
 }
 
 .form-group label {
@@ -19,13 +20,30 @@
   font-weight: 600;
   color: var(--purple-dark);
   text-align: left;
+  /* Garante que o label fique alinhado com a largura do input */
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Centraliza o input-wrapper e mantém o texto à esquerda */
+.form-group .input-wrapper {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* O texto dentro do input fica à esquerda (padrão) */
+.form-group .input-field {
+  text-align: left;
 }
 
 .form-actions-row {
   display: flex;
-  justify-content: flex-end; 
+  justify-content: center; /* Centraliza o "Esqueceu a senha?" */
+  width: 100%;
+  max-width: 380px;
   margin-bottom: 1.5rem;
   margin-top: -0.5rem;
+  align-self: center;
 }
 
 .link-esqueceu {
@@ -42,7 +60,9 @@
 }
 
 .btn-entrar {
-  width: 480px; 
+  width: 100%; 
+  max-width: 380px;
+  align-self: center;
   margin-top: 0.5rem;
 }
 
@@ -75,4 +95,6 @@
   text-align: center;
   margin-bottom: 1.5rem;
   width: 100%;
+  max-width: 380px;
+  align-self: center;
 }

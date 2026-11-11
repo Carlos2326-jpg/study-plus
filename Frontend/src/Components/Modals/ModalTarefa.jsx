@@ -4,9 +4,25 @@ import { tarefaService, subtarefaService } from "../../Services/tarefaService";
 import { disciplinaService } from "../../Services/disciplinaService";
 import { estudoService } from "../../Services/estudoService";
 
-export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvarSucesso }) {
-  const isEstudo = tipo === "estudo";
-  
+const extrairLista = (resposta) => {
+  if (Array.isArray(resposta)) return resposta;
+  if (resposta && Array.isArray(resposta.data)) return resposta.data;
+  if (resposta && resposta.data && Array.isArray(resposta.data.data)) return resposta.data.data;
+  return [];
+};
+
+const extrairId = (obj) => (obj && obj.id) || (obj && obj.data && obj.data.id) || null;
+
+// Função para pegar a data de hoje no formato YYYY-MM-DD
+const getHoje = () => {
+  const hoje = new Date();
+  return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}-${String(hoje.getDate()).padStart(2, "0")}`;
+};
+
+export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvarSucesso, tarefa = null }) {
+  const editando = !!tarefa;
+  const isEstudo = tipo === "estudo" && !editando;
+
   const [titulo, setTitulo] = useState("");
   const [dataLimite, setDataLimite] = useState("");
   const [horario, setHorario] = useState("");
@@ -14,14 +30,19 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
   const [prioridade, setPrioridade] = useState("media");
   const [descricao, setDescricao] = useState("");
   
+  // NOVOS CAMPOS: Recorrência
+  const [recorrencia, setRecorrencia] = useState("nenhuma");
+  const [dataFim, setDataFim] = useState("");
+
   const [disciplinas, setDisciplinas] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
   const [mostrarAddDisciplina, setMostrarAddDisciplina] = useState(false);
   const [novaDisciplina, setNovaDisciplina] = useState("");
-  
+
   const [subtarefas, setSubtarefas] = useState([]);
+  const [subsOriginais, setSubsOriginais] = useState([]);
   const [novaSubtarefa, setNovaSubtarefa] = useState("");
-  
+
   const [erro, setErro] = useState("");
   const [salvando, setSalvando] = useState(false);
 
@@ -37,26 +58,53 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
   useEffect(() => {
     if (isOpen) {
       carregarDisciplinas();
+      
+      // Limpa campos de recorrência ao abrir
+      setRecorrencia("nenhuma");
+      setDataFim("");
+
+      if (tarefa) {
+        const prazo = tarefa.prazo || "";
+        setTitulo(tarefa.titulo || "");
+        setDataLimite(prazo.slice(0, 10));
+        setHorario(prazo.length > 10 ? prazo.slice(11, 16) : "");
+        setPrioridade(tarefa.prioridade || "media");
+        setDescricao(tarefa.descricao || "");
+        setCategoriaSelecionada(tarefa.disciplina_id ? String(tarefa.disciplina_id) : "");
+
+        subtarefaService.listarPorTarefa(tarefa.id)
+          .then((resp) => {
+            const lista = extrairLista(resp);
+            setSubtarefas(lista);
+            setSubsOriginais(lista);
+          })
+          .catch((e) => console.error("Erro ao carregar subtarefas:", e));
+      }
     } else {
       setTitulo(""); setDataLimite(""); setHorario(""); setHorarioFim(""); setPrioridade("media"); setDescricao(""); setErro("");
-      setSubtarefas([]); setNovaSubtarefa(""); setCategoriaSelecionada("");
+      setSubtarefas([]); setSubsOriginais([]); setNovaSubtarefa(""); setCategoriaSelecionada("");
       setMostrarAddDisciplina(false); setNovaDisciplina("");
+      setRecorrencia("nenhuma"); setDataFim("");
     }
-  }, [isOpen]);
+  }, [isOpen, tarefa]);
 
   if (!isOpen) return null;
 
-  const tituloModal = isEstudo ? "Novo estudo" : "Nova Tarefa";
-  const botaoSalvar = isEstudo ? "Salvar estudo" : "Salvar Tarefa";
+  const tituloModal = editando ? "Editar Tarefa" : isEstudo ? "Novo estudo" : "Nova Tarefa";
+  const botaoSalvar = editando ? "Salvar alterações" : isEstudo ? "Salvar estudo" : "Salvar Tarefa";
 
   const handleAddSubtarefa = () => {
     if (!novaSubtarefa.trim()) return;
-    setSubtarefas([...subtarefas, { id: Date.now(), titulo: novaSubtarefa.trim() }]);
+    setSubtarefas([...subtarefas, { id: Date.now(), titulo: novaSubtarefa.trim(), nova: true }]);
     setNovaSubtarefa("");
   };
 
+  const handleEditarTituloSubtarefa = (id, novoTitulo) => {
+    setSubtarefas(subtarefas.map((s) => (s.id === id ? { ...s, titulo: novoTitulo } : s)));
+  };
+
   const handleRemoverSubtarefa = (id) => {
-    setSubtarefas(subtarefas.filter(sub => sub.id !== id));
+    setSubtarefas(subtarefas.filter((sub) => sub.id !== id));
   };
 
   const handleCriarDisciplina = async () => {
@@ -65,7 +113,7 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
       setSalvando(true);
       const nova = await disciplinaService.criar(novaDisciplina.trim(), "");
       await carregarDisciplinas();
-      setCategoriaSelecionada(nova.id);
+      setCategoriaSelecionada(String(nova.id));
       setMostrarAddDisciplina(false);
       setNovaDisciplina("");
       setErro("");
@@ -76,83 +124,118 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
     }
   };
 
+  const sincronizarSubtarefas = async (tarefaId) => {
+    const idsAtuais = subtarefas.filter((s) => !s.nova).map((s) => s.id);
+
+    for (const orig of subsOriginais) {
+      if (!idsAtuais.includes(orig.id)) {
+        await subtarefaService.excluir(orig.id);
+      }
+    }
+    for (const sub of subtarefas) {
+      if (sub.nova) {
+        await subtarefaService.criar(tarefaId, sub.titulo);
+      } else {
+        const orig = subsOriginais.find((o) => o.id === sub.id);
+        if (orig && orig.titulo !== sub.titulo) {
+          const concluida = orig.concluida === 1 || orig.concluida === true || orig.concluida === "1";
+          await subtarefaService.atualizar(sub.id, { titulo: sub.titulo.trim(), concluida });
+        }
+      }
+    }
+  };
+
   const handleSalvar = async (e) => {
     e.preventDefault();
     setErro("");
 
-    if (!titulo.trim()) return setErro(`O título é obrigatório.`);
+    const hoje = getHoje();
+
+    // --- VALIDAÇÕES ---
+    if (!titulo.trim()) return setErro("O título é obrigatório.");
     if (!dataLimite) return setErro("A data é obrigatória.");
     if (!categoriaSelecionada) return setErro("Selecione uma disciplina.");
+    
+    // Validação de data passada (só para criação de novos estudos/tarefas)
+    if (!editando && dataLimite < hoje) {
+      return setErro("Não é possível agendar para uma data que já passou.");
+    }
+
+    // Validação de recorrência
+    if (isEstudo && recorrencia !== "nenhuma") {
+      if (!dataFim) return setErro("Informe a data de fim da recorrência.");
+      if (dataFim < dataLimite) return setErro("A data de fim deve ser igual ou posterior à data de início.");
+      if (dataFim < hoje) return setErro("A data de fim não pode estar no passado.");
+    }
 
     try {
       setSalvando(true);
 
-      if (isEstudo) {
-        // ==========================================
-        // LÓGICA PARA ESTUDO (Cria Tarefa + Cronograma)
-        // ==========================================
+      if (editando) {
+        // ---------- EDIÇÃO ----------
+        const prazoFormatado = horario ? `${dataLimite}T${horario}:00` : dataLimite;
+
+        await tarefaService.atualizar(tarefa.id, {
+          titulo: titulo.trim(),
+          prazo: prazoFormatado,
+          prioridade,
+          descricao: descricao.trim(),
+          disciplina_id: Number(categoriaSelecionada),
+          status: tarefa.status,
+        });
+
+        await sincronizarSubtarefas(tarefa.id);
+
+      } else if (isEstudo) {
+        // ---------- NOVO ESTUDO (Tarefa + Cronograma com Recorrência) ----------
         if (!horario || !horarioFim) {
           setSalvando(false);
           return setErro("Para estudos, preencha o horário de início e fim.");
         }
 
-        // 1. Cria a Tarefa
         const tarefaCriada = await tarefaService.criar({
           titulo: titulo.trim(),
           prazo: dataLimite,
-          prioridade: prioridade,
+          prioridade,
           descricao: descricao.trim(),
           disciplina_id: Number(categoriaSelecionada),
-          status: "pendente"
+          status: "pendente",
         });
+        const idDaTarefa = extrairId(tarefaCriada);
+        if (!idDaTarefa) throw new Error("O servidor não retornou o ID da tarefa criada.");
 
-        // BLINDAGEM: Pega o ID independente de como o Axios retornar
-        let idDaTarefa = null;
-        if (tarefaCriada && tarefaCriada.id) idDaTarefa = tarefaCriada.id;
-        else if (tarefaCriada && tarefaCriada.data && tarefaCriada.data.id) idDaTarefa = tarefaCriada.data.id;
-        
-        if (!idDaTarefa) {
-          throw new Error("O servidor não retornou o ID da tarefa criada.");
+        for (const sub of subtarefas) {
+          await subtarefaService.criar(idDaTarefa, sub.titulo);
         }
 
-        // 2. Salva as subtarefas vinculadas a essa tarefa
-        if (subtarefas.length > 0) {
-          for (const sub of subtarefas) {
-            await subtarefaService.criar(idDaTarefa, sub.titulo);
-          }
-        }
-
-        // 3. Cria o Cronograma (para aparecer na agenda)
-        await estudoService.criarCronograma({
-          disciplina: disciplinas.find(d => d.id === Number(categoriaSelecionada))?.nome,
-          tarefa_id: idDaTarefa, // Vincula o cronograma à tarefa criada
+        // Envia recorrência para o Back-end
+        const dadosCronograma = {
+          disciplina: disciplinas.find((d) => d.id === Number(categoriaSelecionada))?.nome,
+          tarefa_id: idDaTarefa,
           data_inicio: dataLimite,
-          data_fim: dataLimite,
+          data_fim: recorrencia === "nenhuma" ? dataLimite : dataFim,
           horario_inicio: horario,
           horario_fim: horarioFim,
-          recorrencia: "nenhuma"
-        });
+          recorrencia: recorrencia,
+        };
+
+        await estudoService.criarCronograma(dadosCronograma);
 
       } else {
-        // ==========================================
-        // LÓGICA PARA TAREFA PADRÃO
-        // ==========================================
+        // ---------- NOVA TAREFA ----------
         const prazoFormatado = horario ? `${dataLimite}T${horario}:00` : dataLimite;
-        
+
         const tarefaCriada = await tarefaService.criar({
           titulo: titulo.trim(),
           prazo: prazoFormatado,
-          prioridade: prioridade,
+          prioridade,
           descricao: descricao.trim(),
           disciplina_id: Number(categoriaSelecionada),
-          status: "pendente"
+          status: "pendente",
         });
+        const idDaTarefa = extrairId(tarefaCriada);
 
-        let idDaTarefa = null;
-        if (tarefaCriada && tarefaCriada.id) idDaTarefa = tarefaCriada.id;
-        else if (tarefaCriada && tarefaCriada.data && tarefaCriada.data.id) idDaTarefa = tarefaCriada.data.id;
-
-        if (subtarefas.length > 0 && idDaTarefa) {
+        if (idDaTarefa) {
           for (const sub of subtarefas) {
             await subtarefaService.criar(idDaTarefa, sub.titulo);
           }
@@ -160,8 +243,7 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
       }
 
       if (onSalvarSucesso) onSalvarSucesso();
-      onClose(); 
-      
+      onClose();
     } catch (error) {
       console.error("Erro ao salvar:", error);
       setErro(error.response?.data?.message || error.message || "Erro ao salvar no servidor.");
@@ -182,24 +264,24 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
 
         <form onSubmit={handleSalvar}>
           <div className="modal-body-scroll">
-            
+
             {erro && <div className="error-message" style={{ marginBottom: "1rem" }}>{erro}</div>}
 
             <div className="form-row-titulo">
               <div className="input-group" style={{ flex: 1 }}>
                 <label>Título {isEstudo ? "do estudo" : "da Tarefa"} *</label>
-                <input 
-                  type="text" 
-                  className="input-modal" 
+                <input
+                  type="text"
+                  className="input-modal"
                   placeholder={isEstudo ? "Escreva o nome do estudo..." : "Escreva o nome da tarefa..."}
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
                 />
               </div>
-              
-              <button 
-                type="button" 
-                className="btn-nova-disciplina" 
+
+              <button
+                type="button"
+                className="btn-nova-disciplina"
                 onClick={() => setMostrarAddDisciplina(!mostrarAddDisciplina)}
                 style={{ marginTop: "1.5rem" }}
               >
@@ -211,10 +293,10 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
               <div className="input-group" style={{ padding: "1rem", background: "var(--cinza-50)", borderRadius: "var(--raio)", border: "1px solid var(--cinza-200)" }}>
                 <label>Criar nova disciplina</label>
                 <div className="subtarefa-add-row">
-                  <input 
-                    type="text" 
-                    className="input-modal" 
-                    placeholder="Nome da disciplina..." 
+                  <input
+                    type="text"
+                    className="input-modal"
+                    placeholder="Nome da disciplina..."
                     value={novaDisciplina}
                     onChange={(e) => setNovaDisciplina(e.target.value)}
                   />
@@ -228,7 +310,14 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
                 <label>Data {isEstudo ? "do Estudo" : "Limite"} *</label>
                 <div className="input-with-icon">
                   <span className="icon">📅</span>
-                  <input type="date" className="input-modal" value={dataLimite} onChange={(e) => setDataLimite(e.target.value)} />
+                  <input 
+                    type="date" 
+                    className="input-modal" 
+                    value={dataLimite} 
+                    onChange={(e) => setDataLimite(e.target.value)}
+                    // BLOQUEIA DATAS PASSADAS NO PRÓPRIO NAVEGADOR
+                    min={getHoje()} 
+                  />
                 </div>
               </div>
               <div className="input-group">
@@ -241,56 +330,95 @@ export default function ModalTarefa({ isOpen, onClose, tipo = "tarefa", onSalvar
             </div>
 
             {isEstudo && (
-              <div className="input-group">
-                <label>Fim do Estudo *</label>
-                <div className="input-with-icon">
-                  <span className="icon">🕐</span>
-                  <input type="time" className="input-modal" value={horarioFim} onChange={(e) => setHorarioFim(e.target.value)} />
+              <>
+                <div className="input-group">
+                  <label>Fim *</label>
+                  <div className="input-with-icon">
+                    <span className="icon">🕐</span>
+                    <input type="time" className="input-modal" value={horarioFim} onChange={(e) => setHorarioFim(e.target.value)} />
+                  </div>
                 </div>
-              </div>
+
+                {/* NOVO: Campos de Recorrência */}
+                <div className="form-row-2col">
+                  <div className="input-group">
+                    <label>Recorrência</label>
+                    <select 
+                      className="input-modal" 
+                      value={recorrencia} 
+                      onChange={(e) => {
+                        setRecorrencia(e.target.value);
+                        if (e.target.value === "nenhuma") setDataFim("");
+                      }}
+                    >
+                      <option value="nenhuma">Nenhuma</option>
+                      <option value="diaria">Diária</option>
+                      <option value="semanal">Semanal</option>
+                    </select>
+                  </div>
+                  
+                  {recorrencia !== "nenhuma" && (
+                    <div className="input-group">
+                      <label>Repetir até *</label>
+                      <div className="input-with-icon">
+                        <span className="icon">📅</span>
+                        <input 
+                          type="date" 
+                          className="input-modal" 
+                          value={dataFim} 
+                          onChange={(e) => setDataFim(e.target.value)}
+                          min={dataLimite || getHoje()}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
 
-            <div className="input-group">
-              <label>Prioridade</label>
-              <div className="prioridade-botoes">
-                <button type="button" className={`btn-prioridade ${prioridade === "baixa" ? "active baixa" : ""}`} onClick={() => setPrioridade("baixa")}><span className="dot"></span> Baixa</button>
-                <button type="button" className={`btn-prioridade ${prioridade === "media" ? "active media" : ""}`} onClick={() => setPrioridade("media")}><span className="dot"></span> Média</button>
-                <button type="button" className={`btn-prioridade ${prioridade === "alta" ? "active alta" : ""}`} onClick={() => setPrioridade("alta")}><span className="dot"></span> Alta</button>
-              </div>
-            </div>
-
-            <div className="input-group">
-              <label>Disciplina *</label>
-              <div className="input-with-icon">
-                <span className="icon">📁</span>
+            <div className="form-row-2col">
+              <div className="input-group">
+                <label>Disciplina *</label>
                 <select className="input-modal select-categoria" value={categoriaSelecionada} onChange={(e) => setCategoriaSelecionada(e.target.value)}>
                   <option value="">Selecione uma disciplina...</option>
-                  {disciplinas.map(d => (
+                  {disciplinas.map((d) => (
                     <option key={d.id} value={d.id}>{d.nome}</option>
                   ))}
                 </select>
-                <span className="icon-chevron">v</span>
+              </div>
+              <div className="input-group">
+                <label>Prioridade</label>
+                <select className="input-modal select-categoria" value={prioridade} onChange={(e) => setPrioridade(e.target.value)}>
+                  <option value="baixa">Baixa</option>
+                  <option value="media">Média</option>
+                  <option value="alta">Alta</option>
+                </select>
               </div>
             </div>
 
             <div className="input-group">
               <label>Subtarefas</label>
               <div className="subtarefa-add-row">
-                <input 
-                  type="text" 
-                  className="input-modal input-sub" 
-                  placeholder="Adicionar subtarefa..." 
+                <input
+                  type="text"
+                  className="input-modal input-sub"
+                  placeholder="Adicionar subtarefa..."
                   value={novaSubtarefa}
                   onChange={(e) => setNovaSubtarefa(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSubtarefa())}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddSubtarefa())}
                 />
                 <button type="button" className="btn-add-sub" onClick={handleAddSubtarefa}>+</button>
               </div>
               {subtarefas.length > 0 && (
                 <div className="subtarefas-lista">
-                  {subtarefas.map(sub => (
+                  {subtarefas.map((sub) => (
                     <div key={sub.id} className="subtarefa-item">
-                      <span>• {sub.titulo}</span>
+                      <input
+                        type="text"
+                        className="input-modal input-sub"
+                        value={sub.titulo}
+                        onChange={(e) => handleEditarTituloSubtarefa(sub.id, e.target.value)}
+                      />
                       <button type="button" onClick={() => handleRemoverSubtarefa(sub.id)}>✕</button>
                     </div>
                   ))}
