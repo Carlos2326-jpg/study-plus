@@ -8,7 +8,6 @@ O projeto é dividido em uma API RESTful robusta (Back-end), um banco de dados r
 
 ## 📸 Preview do Sistema
 
-> 💡 *Dica: Adicione aqui imagens das telas mais bonitas do projeto para causar uma ótima primeira impressão.*
 <img width="1440" height="900" alt="login" src="https://github.com/user-attachments/assets/a7f67f45-9299-46ff-a74d-6d2758b5ab73" />
 
 <img width="1440" height="900" alt="pomodoro" src="https://github.com/user-attachments/assets/5e8bfc3e-4d0f-442f-a07e-7aa96c8402d6" />
