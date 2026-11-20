@@ -1,4 +1,4 @@
-# 🌱 Study+ 
+# Study+ 
 
 O **Study+** é um sistema web completo de produtividade e gestão de estudos. Ele foi projetado para ajudar estudantes a organizarem suas tarefas, acompanharem o tempo de foco (Pomodoro) e visualizarem seu progresso de forma intuitiva e motivadora.
 
@@ -9,14 +9,13 @@ O projeto é dividido em uma API RESTful robusta (Back-end), um banco de dados r
 ## 📸 Preview do Sistema
 
 > 💡 *Dica: Adicione aqui imagens das telas mais bonitas do projeto para causar uma ótima primeira impressão.*
-<img width="1920" height="1080" alt="login" src="https://github.com/user-attachments/assets/50ed5fe7-28f8-4b14-ae54-9007222385a4" />
+<img width="1440" height="900" alt="login" src="https://github.com/user-attachments/assets/a7f67f45-9299-46ff-a74d-6d2758b5ab73" />
 
-<img width="1920" height="1080" alt="pomodoro" src="https://github.com/user-attachments/assets/9aba456d-1a38-4f01-859a-82e27346aa99" />
+<img width="1440" height="900" alt="pomodoro" src="https://github.com/user-attachments/assets/5e8bfc3e-4d0f-442f-a07e-7aa96c8402d6" />
 
-<img width="1920" height="1080" alt="perfil" src="https://github.com/user-attachments/assets/84d26c4c-7a87-44c2-a3eb-b83fd2dfb8f0" />
+<img width="1440" height="900" alt="perfil" src="https://github.com/user-attachments/assets/e169cc85-de9c-4b7d-b6fb-386e45ce1f3c" />
 
-<img width="1920" height="1080" alt="Produtividade — semana com registros" src="https://github.com/user-attachments/assets/88ac5f63-8ec3-4fb1-876d-0e5703aaf5fd" />
-
+<img width="1440" height="900" alt="Produtividade — semana com registros" src="https://github.com/user-attachments/assets/1b3293f1-9c9a-44e0-809a-d6ac22be486b" />
 ---
 
 ## 🚀 Funcionalidades
